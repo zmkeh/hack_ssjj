@@ -11,7 +11,7 @@ namespace ssjj_hack
         {
             try
             {
-                Log.Print("Main Start");
+                Log.Print("[HACK START]");
                 globalGo = new GameObject("HACK");
                 globalGo.AddComponent<Loop>();
             }
@@ -25,7 +25,7 @@ namespace ssjj_hack
         {
             try
             {
-                Log.Print("Main Destroy");
+                Log.Print("[HACK DESTROY]");
                 globalGo.DestroyImmediate();
             }
             catch (Exception ex)

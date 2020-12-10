@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using ssjj_hack.Module;
 
 namespace ssjj_hack
 {
@@ -9,141 +11,125 @@ namespace ssjj_hack
         {
             try
             {
-                Log.Print("Loop Awake");
                 DontDestroyOnLoad(this);
+                InitPlugins();
             }
             catch (Exception ex)
             {
                 Log.Print(ex);
+            }
+
+            foreach (var t in modules)
+            {
+                try
+                {
+                    t.Value.Awake();
+                }
+                catch (Exception ex)
+                {
+                    Log.Print(ex);
+                }
+            }
+        }
+
+        void Start()
+        {
+            foreach (var t in modules)
+            {
+                try
+                {
+                    t.Value.Start();
+                }
+                catch (Exception ex)
+                {
+                    Log.Print(ex);
+                }
             }
         }
 
         void OnGUI()
         {
-            try
+            foreach (var t in modules)
             {
-                GizmosPro.ins.CallOnGUI();
-            }
-            catch (Exception ex)
-            {
-                Log.Print(ex);
+                try
+                {
+                    t.Value.OnGUI();
+                }
+                catch (Exception ex)
+                {
+                    Log.Print(ex);
+                }
             }
         }
 
         void Update()
         {
-            try
+            foreach (var t in modules)
             {
-
-            }
-            catch (Exception ex)
-            {
-                Log.Print(ex);
+                try
+                {
+                    t.Value.Update();
+                }
+                catch (Exception ex)
+                {
+                    Log.Print(ex);
+                }
             }
         }
 
         void LateUpdate()
         {
-            try
+            foreach (var t in modules)
             {
-                if (Screen.width != 800 || Screen.fullScreen)
+                try
                 {
-                    Screen.SetResolution(800, 480, false);
+                    t.Value.LateUpdate();
                 }
-
-                UpdateDraw();
-                UpdateAim();
-            }
-            catch (Exception ex)
-            {
-                Log.Print(ex);
-            }
-        }
-
-
-        // logic
-        private Transform lockTrans = null;
-        void UpdateAim()
-        {
-            var rootGo = GameObject.Find("thirdPersonResources");
-            if (rootGo == null || Camera.main == null)
-                return;
-            var cam = Camera.main;
-
-            if (Input.GetMouseButton(0))
-            {
-                if (lockTrans == null)
+                catch (Exception ex)
                 {
-                    var root = rootGo.transform;
-                    for (int i = 0; i < root.childCount; i++)
-                    {
-                        var c = root.GetChild(i);
-
-                        if (!c.gameObject.activeSelf)
-                            continue;
-
-                        var p = c.FindChildDeep("Bip01_Head");
-                        var p2 = p.Find("Bip01_HeadNub");
-                        if (p == null || p2 == null)
-                            continue;
-
-                        var uipos = cam.WorldToScreenPoint(p.position);
-                        var uipos2 = cam.WorldToScreenPoint(p2.position);
-                        var center = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
-                        var headRadius = (uipos2 - uipos).magnitude;
-                        if (uipos.z > 0 && new TCircle(uipos, headRadius).IsOverLapWith(center))
-                        {
-                            lockTrans = p2;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    cam.transform.LookAt(lockTrans.position);
-                }
-            }
-            else
-            {
-                lockTrans = null;
-            }
-        }
-
-        void UpdateDraw()
-        {
-            var rootGo = GameObject.Find("thirdPersonResources");
-            if (rootGo == null || Camera.main == null)
-                return;
-            var cam = Camera.main;
-            var root = rootGo.transform;
-            for (int i = 0; i < root.childCount; i++)
-            {
-                var c = root.GetChild(i);
-
-                if (!c.gameObject.activeSelf)
-                    continue;
-
-                var p = c.FindChildDeep("Bip01_Head");
-                var p2 = p.Find("Bip01_HeadNub");
-                if (p == null || p2 == null)
-                    continue;
-
-                var uipos = cam.WorldToScreenPoint(p.position);
-                var uipos2 = cam.WorldToScreenPoint(p2.position);
-                var topCenter = new Vector2(Screen.width * 0.5f, Screen.height);
-                var headRadius = (uipos2 - uipos).magnitude;
-                if (uipos.z > 0)
-                {
-                    GizmosPro.DrawLine(topCenter, uipos, Color.red);
-                    GizmosPro.DrawCircle(new TCircle(uipos, headRadius), Color.red);
+                    Log.Print(ex);
                 }
             }
         }
-        private string GetTransformPath(Transform t)
+
+        void OnDestroy()
         {
-            if (t.parent != null)
-                return GetTransformPath(t.parent) + "/" + t.name;
-            return t.name;
+            foreach (var t in modules)
+            {
+                try
+                {
+                    t.Value.OnDestroy();
+                }
+                catch (Exception ex)
+                {
+                    Log.Print(ex);
+                }
+            }
+        }
+
+        public Dictionary<Type, ModuleBase> modules = new Dictionary<Type, ModuleBase>();
+
+        public void AddPlugin<T>() where T : ModuleBase, new()
+        {
+            if (!modules.ContainsKey(typeof(T)))
+            {
+                Log.Print("Run Plugin: " + typeof(T));
+                modules.Add(typeof(T), Activator.CreateInstance(typeof(T)) as T);
+            }
+        }
+
+        public T GetPlugin<T>() where T : ModuleBase
+        {
+            if (modules.TryGetValue(typeof(T), out var m))
+                return m as T;
+            return null;
+        }
+
+        public void InitPlugins()
+        {
+            AddPlugin<Settings>();
+            AddPlugin<Esp>();
+            AddPlugin<Aim>();
         }
     }
 }

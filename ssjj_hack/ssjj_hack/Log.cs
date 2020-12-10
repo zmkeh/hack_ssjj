@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -32,6 +33,16 @@ namespace ssjj_hack
         {
             var _date = DateTime.Now.ToString("HH:mm:ss.ms");
             File.AppendAllText(file, $"[{_date}] {msg}\r\n");
+        }
+
+
+        private static Dictionary<string, string> logCount = new Dictionary<string, string>();
+        public static void PrintOnce(string key, string msg)
+        {
+            if (logCount.ContainsKey(key))
+                return;
+            logCount[key] = msg;
+            Log.Print(msg);
         }
 
         public static void Print(Exception ex)

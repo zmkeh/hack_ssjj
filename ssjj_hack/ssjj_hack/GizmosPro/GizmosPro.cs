@@ -6,7 +6,7 @@ namespace ssjj_hack
     public class GizmosPro
     {
         private List<GizmosProGraph> graphList = new List<GizmosProGraph>();
-        private const int MAX_GRAPH_COUNT = 100;
+        private const int MAX_GRAPH_COUNT = 1000;
         private static GizmosPro _ins;
         public static GizmosPro ins
         {

@@ -52,5 +52,12 @@ namespace ssjj_hack
             }
             return null;
         }
+
+        public static string GetPath(this Transform transform)
+        {
+            if (transform.parent != null)
+                return transform.parent.GetPath() + "/" + transform.name;
+            return transform.name;
+        }
     }
 }
