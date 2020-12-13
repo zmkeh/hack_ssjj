@@ -7,6 +7,8 @@ namespace ssjj_hack
 {
     public class Loop : MonoBehaviour
     {
+        private static Loop ins = null;
+
         void Awake()
         {
             try
@@ -77,6 +79,21 @@ namespace ssjj_hack
             }
         }
 
+        void FixedUpdate()
+        {
+            foreach (var t in modules)
+            {
+                try
+                {
+                    t.Value.FixedUpdate();
+                }
+                catch (Exception ex)
+                {
+                    Log.Print(ex);
+                }
+            }
+        }
+
         void LateUpdate()
         {
             foreach (var t in modules)
@@ -118,16 +135,21 @@ namespace ssjj_hack
             }
         }
 
-        public T GetPlugin<T>() where T : ModuleBase
+
+        public static T GetPlugin<T>() where T : ModuleBase
         {
-            if (modules.TryGetValue(typeof(T), out var m))
+            if (ins == null)
+                ins = GameObject.Find("HACK").GetComponent<Loop>();
+            if (ins.modules.TryGetValue(typeof(T), out var m))
                 return m as T;
             return null;
         }
 
         public void InitPlugins()
         {
+            AddPlugin<MyConsole>();
             AddPlugin<Settings>();
+            AddPlugin<PlayerMgr>();
             AddPlugin<Esp>();
             AddPlugin<Aim>();
         }

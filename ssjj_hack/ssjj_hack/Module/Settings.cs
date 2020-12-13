@@ -8,11 +8,14 @@ namespace ssjj_hack.Module
 {
     public class Settings : ModuleBase
     {
+        public int screenWidth = 1280;
+        public int screenHeight = 720;
+
         public void SetScreen()
         {
-            if (Screen.width != 800 || Screen.fullScreen)
+            if (Screen.width != screenWidth || Screen.fullScreen)
             {
-                Screen.SetResolution(1280, 720, false);
+                Screen.SetResolution(screenWidth, screenHeight, false);
             }
         }
 

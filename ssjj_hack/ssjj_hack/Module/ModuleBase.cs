@@ -22,6 +22,11 @@ namespace ssjj_hack.Module
 
         }
 
+        public virtual void FixedUpdate()
+        {
+
+        }
+
         public virtual void LateUpdate()
         {
 

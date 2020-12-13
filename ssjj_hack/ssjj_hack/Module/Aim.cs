@@ -8,6 +8,8 @@ namespace ssjj_hack.Module
 {
     public class Aim : ModuleBase
     {
+        public PlayerMgr playerMgr => Loop.GetPlugin<PlayerMgr>();
+
         public override void Update()
         {
             base.Update();
@@ -16,51 +18,88 @@ namespace ssjj_hack.Module
         }
 
         // logic
-        private Transform lockTrans = null;
         void UpdateAim()
         {
-            var rootGo = GameObject.Find("thirdPersonResources");
-            if (rootGo == null || Camera.main == null)
-                return;
-            var cam = Camera.main;
-
-            if (Input.GetMouseButton(0))
+            var minPoint = Vector2.zero;
+            var minDist = float.MaxValue;
+            var center = new Vector2(Screen.width, Screen.height) * 0.5f;
+            foreach (var p in playerMgr.models)
             {
-                if (lockTrans == null)
+                foreach (var line in p.GetLines())
                 {
-                    var root = rootGo.transform;
-                    for (int i = 0; i < root.childCount; i++)
+                    var point = GetNearstPointInLine(line.from, line.to, center, out var f);
+                    var dist = Vector2.Distance(point, center);
+                    if (dist < minDist)
                     {
-                        var c = root.GetChild(i);
-
-                        if (!c.gameObject.activeSelf)
-                            continue;
-
-                        var p = c.FindChildDeep("Bip01_Head");
-                        var p2 = p.Find("Bip01_HeadNub");
-                        if (p == null || p2 == null)
-                            continue;
-
-                        var uipos = cam.WorldToScreenPoint(p.position);
-                        var uipos2 = cam.WorldToScreenPoint(p2.position);
-                        var center = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
-                        var headRadius = (uipos2 - uipos).magnitude;
-                        if (uipos.z > 0 && new TCircle(uipos, headRadius).IsOverLapWith(center))
-                        {
-                            lockTrans = p2;
-                            break;
-                        }
+                        minDist = dist;
+                        minPoint = point;
                     }
                 }
-                else
-                {
-                    cam.transform.LookAt(lockTrans.position);
-                }
+            }
+
+            if (minDist <= Screen.width * 0.1f)
+            {
+                var l = new TLine(minPoint, center);
+                GizmosPro.DrawLine(l.from, l.to, Color.red);
+            }
+        }
+
+        void UpdateAccuracy()
+        { 
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public static Vector3 GetNearstPointInLine(Vector3 start, Vector3 end, Vector3 targetPoint, out float factor, int needExtend = -1)
+        {
+            Vector3 _delta = end - start;
+            if (_delta == Vector3.zero)
+            {
+                factor = 0;
+                return start;
+            }
+            factor = (Vector3.Dot(targetPoint, _delta) - (Vector3.Dot(start, _delta))) / (_delta.sqrMagnitude);
+            if ((factor >= 0 && factor <= 1) || needExtend == 2)
+            {
+                return start + _delta * factor;
             }
             else
             {
-                lockTrans = null;
+                if (needExtend == -1)
+                {
+                    if (factor < 0) return start;
+                    if (factor > 1) return end;
+                }
+                else if (needExtend == 0)
+                {
+                    if (factor < 0) return start + _delta * factor;
+                    if (factor > 1) return end;
+                }
+                else if (needExtend == 1)
+                {
+                    if (factor < 0) return start;
+                    if (factor > 1) return start + _delta * factor;
+                }
             }
+            return Vector3.zero;
         }
     }
 }

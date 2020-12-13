@@ -25,6 +25,10 @@ namespace ssjj_hack
         /// <param name="c"></param>
         public TLine(float a, float b, float c)
         {
+            isSegment = false;
+            from = Vector2.zero;
+            to = Vector2.zero;
+
             if (b != 0)
             {
                 this.a = a / b;
@@ -39,6 +43,9 @@ namespace ssjj_hack
             }
         }
 
+        public bool isSegment;
+        public Vector2 from;
+        public Vector2 to;
         /// <summary>
         /// 两点式: (y-y0)/(y0-y1)=(x-x0)/(x0-x1) 
         /// </summary>
@@ -46,6 +53,10 @@ namespace ssjj_hack
         /// <param name="p2"></param>
         public TLine(Vector2 p1, Vector2 p2)
         {
+            isSegment = true;
+            from = p1;
+            to = p2;
+
             if (p1.x == p2.x) //平行于Y轴
             {
                 a = 1;
