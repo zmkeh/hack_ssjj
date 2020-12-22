@@ -31,6 +31,8 @@ namespace ssjj_hack.Module
                     continue;
                 if (!p.root)
                     continue;
+                if (!p.root.gameObject.activeInHierarchy)
+                    continue;
 
                 foreach (var point in p.GetPoints())
                 {

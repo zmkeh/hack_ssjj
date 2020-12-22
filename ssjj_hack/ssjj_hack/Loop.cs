@@ -147,8 +147,8 @@ namespace ssjj_hack
 
         public void InitPlugins()
         {
-            AddPlugin<MyConsole>();
             AddPlugin<Settings>();
+            // AddPlugin<Viewer>();
             AddPlugin<PlayerMgr>();
             AddPlugin<Esp>();
             AddPlugin<Aim>();

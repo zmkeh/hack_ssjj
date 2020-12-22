@@ -25,15 +25,21 @@ namespace ssjj_hack.Module
             var center = new Vector2(Screen.width, Screen.height) * 0.5f;
             foreach (var p in playerMgr.models)
             {
-                foreach (var line in p.GetLines())
+                if (!p.isCached)
+                    continue;
+                if (!p.root)
+                    continue;
+                if (!p.root.gameObject.activeInHierarchy)
+                    continue;
+                var points = p.GetPoints();
+                if (points.Count <= 3)
+                    continue;
+                var point = (points[2].center + points[3].center) / 2;
+                var dist = Vector2.Distance(point, center);
+                if (dist < minDist)
                 {
-                    var point = GetNearstPointInLine(line.from, line.to, center, out var f);
-                    var dist = Vector2.Distance(point, center);
-                    if (dist < minDist)
-                    {
-                        minDist = dist;
-                        minPoint = point;
-                    }
+                    minDist = dist;
+                    minPoint = point;
                 }
             }
 
@@ -41,11 +47,19 @@ namespace ssjj_hack.Module
             {
                 var l = new TLine(minPoint, center);
                 GizmosPro.DrawLine(l.from, l.to, Color.red);
+
+                if (Input.GetMouseButton(0))
+                {
+                    var delta = minPoint - center;
+                    Log.Print(delta.ToString());
+                    Sim.Move(delta);
+                }
             }
+
         }
 
         void UpdateAccuracy()
-        { 
+        {
         }
 
 

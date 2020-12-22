@@ -28,50 +28,81 @@ namespace ssjj_hack.Module
         {
             base.OnDestroy();
 
-            _ShellReadThread.Abort();
+            isStop = true;
             FreeConsole();
         }
 
         public override void Update()
         {
             base.Update();
-
-            Shell.Print("Updates");
-
         }
 
+        private static Stack<object> _cachedObjStack = new Stack<object>();
         private static object _cachedObj = null;
         private static Thread _ShellReadThread;
         private static string readLine = "";
+        private static bool isStop = false;
         private void ShellReadThread()
         {
-            while (true)
+            while (!isStop)
             {
-                readLine = Console.ReadLine();
+                try
+                {
+                    readLine = Console.ReadLine().ToLower();
 
-                if (readLine.ToLower().StartsWith("reset"))
-                {
-                    _cachedObj = Contexts.sharedInstance;
-                    Shell.Print("Reset OK");
-                    Shell.PrintObj(_cachedObj);
-                }
-                else if (readLine.ToLower().StartsWith("set"))
-                {
-                    var name = readLine.Substring(4).Trim();
                     if (_cachedObj == null)
                     {
-                        Shell.Print("None Object Cached");
-                    }
-                    if (_cachedObj.GetType().GetField(name) != null)
-                    {
-                        _cachedObj = _cachedObj.GetType().GetField(name).GetValue(_cachedObj);
+                        _cachedObj = Contexts.sharedInstance;
                         Shell.PrintObj(_cachedObj);
                     }
-                    else if (_cachedObj.GetType().GetProperty(name) != null)
+                    else if (readLine == ".." && _cachedObjStack.Count > 0)
                     {
-                        _cachedObj = _cachedObj.GetType().GetProperty(name).GetValue(_cachedObj, null);
+                        _cachedObj = _cachedObjStack.Pop();
                         Shell.PrintObj(_cachedObj);
                     }
+                    else
+                    {
+                        object obj = null;
+                        foreach (var f in _cachedObj.GetType().GetFields())
+                        {
+                            if (Shell.IsPrimType(f.FieldType) || Shell.IsList(f.FieldType))
+                                continue;
+                            var val = f.GetValue(_cachedObj);
+                            if (val == null)
+                                continue;
+                            if (f.Name.ToLower().Contains(readLine))
+                                obj = val;
+                        }
+
+                        if (obj == null)
+                        {
+                            foreach (var p in _cachedObj.GetType().GetProperties())
+                            {
+                                if (Shell.IsPrimType(p.PropertyType) || Shell.IsList(p.PropertyType))
+                                    continue;
+                                var val = p.GetValue(_cachedObj, null);
+                                if (val == null)
+                                    continue;
+                                if (p.Name.ToLower().Contains(readLine))
+                                    obj = val;
+                            }
+                        }
+
+                        if (obj != null)
+                        {
+                            _cachedObjStack.Push(_cachedObj);
+                            _cachedObj = obj;
+                            Shell.PrintObj(_cachedObj);
+                        }
+                        else
+                        {
+                            Shell.Print($"can't find {readLine}");
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Shell.Print(e);
                 }
             }
         }
@@ -79,6 +110,21 @@ namespace ssjj_hack.Module
 
     public static class Shell
     {
+        public static bool IsPrimType(Type t)
+        {
+            return t.IsPrimitive
+                        || t == typeof(string)
+                        || t == typeof(Vector2)
+                        || t == typeof(Vector3)
+                        || t == typeof(Rect)
+                        || t == typeof(Quaternion);
+        }
+
+        public static bool IsList(Type t)
+        {
+            return t.IsArray || t.IsGenericType;
+        }
+
         public static void PrintObj(object obj)
         {
             if (obj == null)
@@ -88,57 +134,50 @@ namespace ssjj_hack.Module
             }
 
             var t = obj.GetType();
+
             Print("Fields:");
             foreach (var f in t.GetFields())
             {
-                if (f.IsPrivate
-                    || f.FieldType == typeof(Vector2)
-                    || f.FieldType == typeof(Vector3)
-                    || f.FieldType == typeof(Rect)
-                    || f.FieldType == typeof(Quaternion))
+                if (IsList(f.FieldType))
+                    continue;
+
+                if (IsPrimType(f.FieldType))
                 {
-                    Print(f.Name + " = " + f.ToString());
+                    var val = f.GetValue(obj);
+                    Print($"{f.Name} = {val}");
                 }
                 else
                 {
-                    Print(f.Name + " = " + f.FieldType.Name);
+                    Print($"{f.Name} ({f.FieldType.Name})");
                 }
             }
 
-            Print("Fields:");
+            Print("Props:");
             foreach (var p in t.GetProperties())
             {
-                if (p.PropertyType.IsPrimitive
-                    || p.PropertyType == typeof(Vector2)
-                    || p.PropertyType == typeof(Vector3)
-                    || p.PropertyType == typeof(Rect)
-                    || p.PropertyType == typeof(Quaternion))
+                if (IsList(p.PropertyType))
+                    continue;
+
+                if (IsPrimType(p.PropertyType))
                 {
-                    Print(p.Name + " = " + p.ToString());
+                    var val = p.GetValue(obj, null);
+                    Print($"{p.Name} = {val}");
                 }
                 else
                 {
-                    Print(p.Name + " = " + p.PropertyType.Name);
+                    Print($"{p.Name} ({p.PropertyType.Name})");
                 }
-            }
-
-            Print("Methods:");
-            foreach (var m in t.GetMethods())
-            {
-                var args = "";
-                foreach (var arg in m.GetGenericArguments())
-                {
-                    args += arg.Name + ",";
-                }
-                if (args.Length > 0)
-                    args = args.Substring(0, args.Length - 1);
-                Print(m.Name + "(" + args + ")");
             }
         }
 
         public static void Print(string format, params object[] args)
         {
             Print(string.Format(format, args));
+        }
+
+        public static void Print(Exception e)
+        {
+            Print(string.Format("{0}\n{1}", e.Message, e.StackTrace));
         }
 
         public static void Print(string output)
