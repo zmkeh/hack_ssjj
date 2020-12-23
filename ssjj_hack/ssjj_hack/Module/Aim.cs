@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ssjj_hack.Module
 {
     public class Aim : ModuleBase
     {
         public PlayerMgr playerMgr => Loop.GetPlugin<PlayerMgr>();
+
+        public override void Start()
+        {
+            base.Start();
+        }
 
         public override void Update()
         {
@@ -51,7 +52,6 @@ namespace ssjj_hack.Module
                 if (Input.GetMouseButton(0))
                 {
                     var delta = minPoint - center;
-                    Log.Print(delta.ToString());
                     Sim.Move(delta);
                 }
             }
