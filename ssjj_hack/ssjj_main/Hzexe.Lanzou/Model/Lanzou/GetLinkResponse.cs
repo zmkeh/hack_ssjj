@@ -8,7 +8,6 @@ namespace Hzexe.Lanzou.Model.Lanzou
     {
         public string dom { get; set; }
 
-
         public int inf { get; set; }
 
         public string url { get; set; }

@@ -104,7 +104,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetDir)$(ProjectName).dll" "E:\Program Files (x86)\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetDir)$(ProjectName).dll" "D:\games\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

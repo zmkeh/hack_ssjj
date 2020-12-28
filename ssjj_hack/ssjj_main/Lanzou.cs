@@ -1,4 +1,9 @@
 ﻿using Hzexe.Lanzou;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 using static Hzexe.Lanzou.Model.Lanzou.GetDirResponse;
 
 namespace ssjj_main
@@ -23,10 +28,51 @@ namespace ssjj_main
             var res2 = await client.LsFilesAsync(item.fol_id);
             foreach (var f in res2.text)
             {
-                var down = await client.FileDownloadAsync(f.downs);
+                var share = await client.GetShareUrl(f.id);
+                var url = await client.GetDurl(share.info.url);
+                var down = await DownloadFile(url, f.name);
             }
 
             // var url = client.FileDownloadAsync("https://wws.lanzous.com/ivtVzfmbbuj").Result;
+        }
+
+        public float downloadProgress = 0;
+        public async Task<bool> DownloadFile(string url, string path)
+        {
+            var httpClient = new HttpClient();
+            downloadProgress = 0;
+            var response = await httpClient.GetAsync(url);
+            try
+            {
+                var n = response.Content.Headers.ContentLength;
+                var stream = await response.Content.ReadAsStreamAsync();
+                if (File.Exists(path))
+                    File.Delete(path);
+                using (var fileStream = new FileInfo(path).Create())
+                {
+                    using (stream)
+                    {
+                        byte[] buffer = new byte[1024];
+                        var readLength = 0;
+                        int length;
+                        while ((length = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
+                        {
+                            readLength += length;
+
+                            Debug.Print("下载进度" + ((double)readLength) / n * 100);
+
+                            // 写入到文件
+                            fileStream.Write(buffer, 0, length);
+                        }
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

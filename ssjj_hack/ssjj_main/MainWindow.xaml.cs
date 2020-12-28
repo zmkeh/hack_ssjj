@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ssjj_main
@@ -21,7 +22,7 @@ namespace ssjj_main
         private void Grid_Initialized(object sender, System.EventArgs e)
         {
             Lanzou lan = new Lanzou();
-            lan.Download();
+            Task.Run(lan.Download);
             Timer t = new Timer(OnTimer, null, 0, 1000);
         }
 

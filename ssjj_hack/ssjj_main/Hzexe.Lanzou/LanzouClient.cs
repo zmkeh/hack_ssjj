@@ -81,7 +81,7 @@ namespace Hzexe.Lanzou
                 client.Dispose();
             }
 
-            var lanZouFileResult = System.Text.Json.JsonSerializer.Deserialize<LanZouFileResult>(json);
+            var lanZouFileResult = JsonSerializer.Deserialize<LanZouFileResult>(json);
             var file_id = lanZouFileResult.text[0].id;
             return lanZouFileResult;
         }
@@ -113,7 +113,7 @@ namespace Hzexe.Lanzou
                 client.Dispose();
             }
 
-            var lanZouFileResult = System.Text.Json.JsonSerializer.Deserialize<GetDirResponse>(json);
+            var lanZouFileResult = JsonSerializer.Deserialize<GetDirResponse>(json);
             //var file_id = lanZouFileResult.text[0].id;
             return lanZouFileResult;
         }
@@ -146,7 +146,7 @@ namespace Hzexe.Lanzou
                 client.Dispose();
             }
 
-            var lanZouFileResult = System.Text.Json.JsonSerializer.Deserialize<GetFilesResponse>(json);
+            var lanZouFileResult = JsonSerializer.Deserialize<GetFilesResponse>(json);
             //var file_id = lanZouFileResult.text[0].id;
             return lanZouFileResult;
         }
@@ -179,7 +179,7 @@ namespace Hzexe.Lanzou
                 client.Dispose();
             }
 
-            var obj = System.Text.Json.JsonSerializer.Deserialize<MkdirResponse>(json);
+            var obj = JsonSerializer.Deserialize<MkdirResponse>(json);
             return obj;
         }
 
@@ -205,9 +205,9 @@ namespace Hzexe.Lanzou
             var mc = Regex.Match(html, @"var cgcroc = '(.+?)'");
             Dictionary<string, string> ps = new Dictionary<string, string>(5)
             {
-            { "action","downprocess"},
-            { "sign",mc.Groups[1].Value},
-            { "ves","1"},
+                { "action", "downprocess"},
+                { "sign", mc.Groups[1].Value},
+                { "ves", "1"},
             };
             FormUrlEncodedContent encodedContent = new FormUrlEncodedContent(ps);
             var linkUrl = hostbase + "/ajaxm.php";
@@ -240,7 +240,7 @@ namespace Hzexe.Lanzou
                 res = await client.PostAsync(check_api, encodedContent);
                 res.EnsureSuccessStatusCode();
                 var resJson = await res.Content.ReadAsStringAsync();
-                var jd = System.Text.Json.JsonDocument.Parse(resJson);
+                var jd = JsonDocument.Parse(resJson);
                 var aurl = jd.RootElement.GetProperty("url").GetString();
                 client.Dispose();
                 return aurl;
@@ -254,10 +254,102 @@ namespace Hzexe.Lanzou
 
         }
 
-
-        public async Task<string> GetFileShareUrl(string fileid)
+        public async Task<string> GetDurl(string url)
         {
+            HttpClient client = new HttpClient(handler, false);
+            client.DefaultRequestHeaders.Add("user-agent", userAgent);
+            client.DefaultRequestHeaders.Add("referer", url);
+            var res = await client.GetAsync(url);
+            res.EnsureSuccessStatusCode();
+            var html = await res.Content.ReadAsStringAsync();
+            string p = @"<iframe.*?name=""\d{5,}"".*?src=""(.*?)""";
+            var src = Regex.Match(html, p).Groups[1].Value;
+            Uri u = new Uri(url);
+            var hostbase = u.GetComponents(UriComponents.SchemeAndServer, UriFormat.Unescaped);
+            var frame = hostbase + src;
+            res = await client.GetAsync(frame);
+            res.EnsureSuccessStatusCode();
+            html = await res.Content.ReadAsStringAsync();
+            var sign = Regex.Match(html, @"'sign':(.+?),").Groups[1].Value;
+            if (sign.Length < 20)
+            {
+                sign = Regex.Match(html, $"var ajaxdata\\s*=\\s*'(.+?)';").Groups[1].Value;
+            }
+            Dictionary<string, string> ps = new Dictionary<string, string>(5)
+            {
+                { "action", "downprocess"},
+                { "sign", sign},
+                { "ves", "1"},
+            };
+            FormUrlEncodedContent encodedContent = new FormUrlEncodedContent(ps);
+            var linkUrl = hostbase + "/ajaxm.php";
 
+            res = await client.PostAsync(linkUrl, encodedContent);
+            res.EnsureSuccessStatusCode();
+            html = await res.Content.ReadAsStringAsync();
+            var linkinfo = JsonSerializer.Deserialize<GetLinkResponse>(html);
+            var fake_url = linkinfo.FullUrl;
+            res = await client.GetAsync(fake_url);
+            res.EnsureSuccessStatusCode();
+            html = await res.Content.ReadAsStringAsync();
+            if (html.Contains("网络异常"))
+            {
+                System.Threading.Thread.Sleep(2000);//need keep this
+                client.DefaultRequestHeaders.Remove("referer");
+                client.DefaultRequestHeaders.Add("referer", linkinfo.FullUrl);
+                client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
+                //需要二次验证
+                var file_token = Regex.Match(html, @"'file':'(.+?)'").Groups[1].Value;
+                var file_sign = Regex.Match(html, @"'sign':'(.+?)'").Groups[1].Value;
+                var check_api = linkinfo.dom + "/file/ajax.php";
+                var dic = new Dictionary<string, string>(3);
+                dic.Add("file", file_token);
+                dic.Add("sign", file_sign);
+                dic.Add("el", "2");
+                encodedContent = new FormUrlEncodedContent(dic);
+                res = await client.PostAsync(check_api, encodedContent);
+                res.EnsureSuccessStatusCode();
+                var resJson = await res.Content.ReadAsStringAsync();
+                var jd = JsonDocument.Parse(resJson);
+                var aurl = jd.RootElement.GetProperty("url").GetString();
+                client.Dispose();
+                return aurl;
+            }
+            else
+            {
+                client.Dispose();
+                //重定向后的真直链
+                return res.Content.Headers.ContentLocation.ToString();
+            }
+        }
+
+        public async Task<ShareInfoResponse> GetShareUrl(string file_id)
+        {
+            HttpClient client = new HttpClient(handler, false);
+            var dic = new Dictionary<string, string>(3);
+            dic.Add("file_id", file_id);
+            dic.Add("task", "22");
+            var encodedContent = new FormUrlEncodedContent(dic);
+            client.DefaultRequestHeaders.Add("user-agent", userAgent);
+            client.DefaultRequestHeaders.Add("x-requested-with", "XMLHttpRequest");
+            client.DefaultRequestHeaders.Add("referer", refer);
+            string json = null;
+            try
+            {
+                var rm = await client.PostAsync("https://pc.woozooo.com/doupload.php", encodedContent);
+                rm.EnsureSuccessStatusCode();
+                json = await rm.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("目录创建错误", ex);
+            }
+            finally
+            {
+                client.Dispose();
+            }
+            var obj = JsonSerializer.Deserialize<ShareInfoResponse>(json);
+            return obj;
         }
 
         /// <summary>  
