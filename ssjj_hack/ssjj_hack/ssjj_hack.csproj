@@ -43,15 +43,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Entitas.dll</HintPath>
     </Reference>
-    <Reference Include="Entitas.Blueprints">
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Entitas.Blueprints.dll</HintPath>
-    </Reference>
     <Reference Include="Entitas.CodeGeneration.Attributes, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Entitas.CodeGeneration.Attributes.dll</HintPath>
-    </Reference>
-    <Reference Include="Entitas.Unity">
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Entitas.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Entitas.Utils, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -61,27 +55,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Entitas.VisualDebugging.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Data.Sqlite">
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Mono.Data.Sqlite.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Data.Tds">
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Mono.Data.Tds.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Messaging">
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Mono.Messaging.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.Posix">
       <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Mono.Posix.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Mono.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Web">
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Mono.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.WebBrowser">
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Mono.WebBrowser.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -125,12 +104,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetDir)$(ProjectName).dll" "D:\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"
-Copy "$(TargetDir)$(ProjectName).pdb" "D:\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.pdb"
-Copy "$(TargetDir)$(ProjectName).dll" "D:\games\SSJJ-4399\battle\10\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"
-Copy "$(TargetDir)$(ProjectName).pdb" "D:\games\SSJJ-4399\battle\10\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.pdb"
-Copy "$(TargetDir)$(ProjectName).dll" "D:\games\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"
-Copy "$(TargetDir)$(ProjectName).pdb" "D:\games\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.pdb"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetDir)$(ProjectName).dll" "E:\Program Files (x86)\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
