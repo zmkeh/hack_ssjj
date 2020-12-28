@@ -20,6 +20,8 @@ namespace ssjj_main
 
         private void Grid_Initialized(object sender, System.EventArgs e)
         {
+            Lanzou lan = new Lanzou();
+            lan.Download();
             Timer t = new Timer(OnTimer, null, 0, 1000);
         }
 
