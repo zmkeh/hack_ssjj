@@ -11,7 +11,7 @@ namespace ssjj_main
     {
         const string COOKIE = "phpdisk_info=ADVfbFEzUmpQYA5oAW8GVQJgVWQIWABmUmkJbwYwU2FYbQc1UjUFPVBqVTYJWgBvBjdQMwhmVTcAO1BhDzpUYwBlXz9RYVJnUGQOawFvBmsCYVVlCGcAMlIzCT8GMVNjWG4HPFJlBTlQa1VnCWYAUwZnUGoIZ1UyADNQMQ85VGMAMF9lUTA%3D; ylogin=1104264";
         public bool isDownloading = false;
-        public async void Download()
+        public async void UpdateDLL()
         {
             isDownloading = true;
             LanzouClient client = new LanzouClient(COOKIE);

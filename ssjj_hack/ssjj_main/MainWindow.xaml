@@ -6,14 +6,12 @@
         xmlns:local="clr-namespace:ssjj_main"
         mc:Ignorable="d"
         Title="生死狙击" Height="357" Width="265" WindowStyle="SingleBorderWindow" ResizeMode="CanMinimize" Icon="/ability.png">
-    <Grid Initialized="Grid_Initialized" Background="#FFBFDFFF">
+    <Grid Initialized="Grid_Initialized" Background="#FFB0BECB">
         <Button x:Name="button" Content="启动" HorizontalAlignment="Center" VerticalAlignment="Top" Height="51" Width="112" Background="#FFD7F1D0" Click="Button_Click" Margin="0,229,0,0" BorderBrush="#FF42C55B" BorderThickness="1,1,1,1"/>
         <ProgressBar x:Name="progressBar" Margin="0,305,0,0" Height="11" VerticalAlignment="Top" Maximum="1" Background="#FF6B7B8D" Foreground="#FF77E48A" SmallChange="0.01"/>
         <Label x:Name="label" Content="Label" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,285,0,0" VerticalAlignment="Top" Width="265"/>
-        <CheckBox x:Name="aim" Content="CheckBox" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="esp" Content="CheckBox" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="esp_bone" Content="CheckBox" HorizontalAlignment="Left" Margin="10,76,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="esp_line" Content="CheckBox" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="esp_army" Content="CheckBox" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="aim" Content="Aim" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Checked="settings_changed" Unchecked="settings_changed"/>
+        <CheckBox x:Name="esp" Content="Esp" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" Checked="settings_changed" Unchecked="settings_changed"/>
+        <CheckBox x:Name="esp_friendly" Content="Esp Friend" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" Checked="settings_changed" Unchecked="settings_changed"/>
     </Grid>
 </Window>

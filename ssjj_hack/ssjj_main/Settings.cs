@@ -1,16 +1,12 @@
-﻿using System.IO;
-using UnityEngine;
-
-namespace ssjj_hack.Module
+﻿namespace ssjj_hack.Module
 {
-
     public enum AimPos
     {
         HEAD = 1,
         CHEST = 2,
     }
 
-    public class Settings : ModuleBase
+    public class Settings
     {
         public static bool isEsp;
         public static bool isEspFriendly;
@@ -31,48 +27,11 @@ namespace ssjj_hack.Module
         public static int windowWidth = 1280;
         public static int windowHeight = 720;
 
-        private string iniPath => Path.Combine(Application.streamingAssetsPath, "settings.ini");
-        IniFile ini = new IniFile();
-        FileSystemWatcher watcher = new FileSystemWatcher();
+        public static string iniPath => "settings.ini";
+        static IniFile ini = new IniFile();
 
-        public void SetScreen()
+        public static void Read()
         {
-            if (!isWindowed)
-            {
-                if (!Screen.fullScreen)
-                {
-                    Screen.fullScreen = true;
-                }
-            }
-            else
-            {
-                if (Screen.width != windowWidth
-                  || Screen.height != windowHeight
-                  || Screen.fullScreen)
-                {
-                    Screen.SetResolution(windowWidth, windowHeight, false);
-                }
-            }
-        }
-
-        public override void Update()
-        {
-            SetScreen();
-        }
-
-        public override void Start()
-        {
-            base.Start();
-
-            watcher.BeginInit();
-            watcher.Path = iniPath;
-            watcher.Changed += Watcher_Changed;
-        }
-
-        private void Watcher_Changed(object sender, FileSystemEventArgs e)
-        {
-            Log.Print("Ini Changed: " + e.ChangeType);
-
             ini.Load(iniPath);
 
             isEsp = ini["Settings"]["isEsp"].ToBool();
@@ -83,7 +42,7 @@ namespace ssjj_hack.Module
             isEspAim = ini["Settings"]["isEspAim"].ToBool();
 
             isAim = ini["Settings"]["isAim"].ToBool();
-            aimRadiusPercent = ini["Settings"]["aimRadiusPercent"].ToInt();
+            aimRadiusPercent = ini[""]["aimRadiusPercent"].ToInt();
             isAimRadius = ini["Settings"]["isAimRadius"].ToBool();
             aimPos = (AimPos)ini["Settings"]["aimPos"].ToInt();
 
@@ -95,10 +54,29 @@ namespace ssjj_hack.Module
             windowHeight = ini["Settings"]["windowHeight"].ToInt();
         }
 
-        public override void FixedUpdate()
-        {
-            base.FixedUpdate();
 
+        public static void Save()
+        {
+            ini["Settings"]["isEsp"] = isEsp;
+            ini["Settings"]["isEspFriendly"] = isEspFriendly;
+            ini["Settings"]["isEspHp"] = isEspHp;
+            ini["Settings"]["isEspBox"] = isEspBox;
+            ini["Settings"]["isEspAirLine"] = isEspAirLine;
+            ini["Settings"]["isEspAim"] = isEspAim;
+
+            ini["Settings"]["isAim"] = isAim;
+            ini["Settings"]["aimRadiusPercent"] = aimRadiusPercent;
+            ini["Settings"]["isAimRadius"] = isAimRadius;
+            ini["Settings"]["aimPos"] = (int)aimPos;
+
+            ini["Settings"]["isNoRecoil"] = isNoRecoil;
+            ini["Settings"]["isNoSpread"] = isNoSpread;
+
+            ini["Settings"]["isWindowed"] = isWindowed;
+            ini["Settings"]["windowWidth"] = windowWidth;
+            ini["Settings"]["windowHeight"] = windowHeight;
+
+            ini.Save(iniPath);
         }
     }
 }

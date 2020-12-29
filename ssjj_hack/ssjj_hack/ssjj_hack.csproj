@@ -78,6 +78,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ini.cs" />
     <Compile Include="Module\Aim.cs" />
     <Compile Include="Module\Viewer.cs" />
     <Compile Include="Module\Esp.cs" />

@@ -13,8 +13,10 @@ namespace ssjj_hack.Module
 
         public override void Update()
         {
-            base.Update();
+            if (!Settings.isAim)
+                return;
 
+            base.Update();
             UpdateAim();
         }
 

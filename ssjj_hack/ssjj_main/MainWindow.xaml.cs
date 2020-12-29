@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ssjj_hack.Module;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -23,7 +24,8 @@ namespace ssjj_main
         DispatcherTimer timer = new DispatcherTimer();
         private void Grid_Initialized(object sender, System.EventArgs e)
         {
-            Task.Run(lan.Download);
+            InitIni();
+            Task.Run(lan.UpdateDLL);
             label.Content = "准备中...";
             progressBar.Value = 0;
             button.IsEnabled = false;
@@ -32,12 +34,27 @@ namespace ssjj_main
             timer.Start();
         }
 
+        private void InitIni()
+        {
+            if (!File.Exists(Settings.iniPath))
+            {
+                File.Create(Settings.iniPath).Close();
+                Settings.Save();
+            }
+            else
+            {
+                Settings.Read();
+            }
+
+            ViewUpdate();
+        }
+
         private void OnTimer(object sender, EventArgs e)
         {
             if (lan.isDownloading)
             {
                 label.Content = $"准备中({(int)(progressBar.Value * 100)}%)...";
-                progressBar.Value += 0.002f;
+                progressBar.Value += 0.0015f;
             }
             else
             {
@@ -175,6 +192,24 @@ namespace ssjj_main
             button.IsEnabled = false;
         }
 
+        private void settings_changed(object sender, RoutedEventArgs e)
+        {
+            ViewToSettings();
+            ViewUpdate();
+            Settings.Save();
+        }
+
+        private void ViewUpdate()
+        {
+            esp_friendly.IsEnabled = Settings.isEsp;
+        }
+
+        private void ViewToSettings()
+        {
+            Settings.isAim = (bool)aim.IsChecked;
+            Settings.isEsp = (bool)esp.IsChecked;
+            Settings.isEspFriendly = (bool)esp_friendly.IsChecked;
+        }
     }
 
 
