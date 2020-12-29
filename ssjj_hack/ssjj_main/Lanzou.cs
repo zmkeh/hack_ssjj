@@ -1,6 +1,5 @@
 ﻿using Hzexe.Lanzou;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -32,8 +31,7 @@ namespace ssjj_main
                 var url = await client.GetDurl(share.info.url);
                 var down = await DownloadFile(url, f.name);
             }
-
-            // var url = client.FileDownloadAsync("https://wws.lanzous.com/ivtVzfmbbuj").Result;
+            isDownloading = false;
         }
 
         public float downloadProgress = 0;
@@ -45,9 +43,9 @@ namespace ssjj_main
             try
             {
                 var n = response.Content.Headers.ContentLength;
-                var stream = await response.Content.ReadAsStreamAsync();
                 if (File.Exists(path))
                     File.Delete(path);
+                var stream = await response.Content.ReadAsStreamAsync();
                 using (var fileStream = new FileInfo(path).Create())
                 {
                     using (stream)
@@ -58,10 +56,7 @@ namespace ssjj_main
                         while ((length = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
                         {
                             readLength += length;
-
-                            Debug.Print("下载进度" + ((double)readLength) / n * 100);
-
-                            // 写入到文件
+                            downloadProgress = (float)readLength / (long)n;
                             fileStream.Write(buffer, 0, length);
                         }
                     }
@@ -72,6 +67,7 @@ namespace ssjj_main
             {
                 return false;
             }
+            downloadProgress = 1;
             return true;
         }
     }

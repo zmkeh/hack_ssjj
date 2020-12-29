@@ -5,8 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ssjj_main"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid Initialized="Grid_Initialized">
-        <Button Content="ss" HorizontalAlignment="Left" Margin="437,115,0,0" VerticalAlignment="Top" Height="51" Width="112" Background="#FFDDDDDD" Click="Button_Click"/>
+        Title="生死狙击" Height="357" Width="265" WindowStyle="SingleBorderWindow" ResizeMode="CanMinimize" Icon="/ability.png">
+    <Grid Initialized="Grid_Initialized" Background="#FFBFDFFF">
+        <Button x:Name="button" Content="启动" HorizontalAlignment="Center" VerticalAlignment="Top" Height="51" Width="112" Background="#FFD7F1D0" Click="Button_Click" Margin="0,229,0,0" BorderBrush="#FF42C55B" BorderThickness="1,1,1,1"/>
+        <ProgressBar x:Name="progressBar" Margin="0,305,0,0" Height="11" VerticalAlignment="Top" Maximum="1" Background="#FF6B7B8D" Foreground="#FF77E48A" SmallChange="0.01"/>
+        <Label x:Name="label" Content="Label" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,285,0,0" VerticalAlignment="Top" Width="265"/>
+        <CheckBox x:Name="aim" Content="CheckBox" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="esp" Content="CheckBox" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="esp_bone" Content="CheckBox" HorizontalAlignment="Left" Margin="10,76,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="esp_line" Content="CheckBox" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="esp_army" Content="CheckBox" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

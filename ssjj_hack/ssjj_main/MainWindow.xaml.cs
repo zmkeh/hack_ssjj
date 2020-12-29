@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace ssjj_main
 {
@@ -19,16 +19,33 @@ namespace ssjj_main
             InitializeComponent();
         }
 
+        Lanzou lan = new Lanzou();
+        DispatcherTimer timer = new DispatcherTimer();
         private void Grid_Initialized(object sender, System.EventArgs e)
         {
-            Lanzou lan = new Lanzou();
             Task.Run(lan.Download);
-            Timer t = new Timer(OnTimer, null, 0, 1000);
+            label.Content = "准备中...";
+            progressBar.Value = 0;
+            button.IsEnabled = false;
+            timer.Interval = new TimeSpan(100000);
+            timer.Tick += OnTimer;
+            timer.Start();
         }
 
-        private void OnTimer(object obj)
+        private void OnTimer(object sender, EventArgs e)
         {
-
+            if (lan.isDownloading)
+            {
+                label.Content = $"准备中({(int)(progressBar.Value * 100)}%)...";
+                progressBar.Value += 0.002f;
+            }
+            else
+            {
+                label.Content = "准备完成";
+                timer.Stop();
+                button.IsEnabled = true;
+                progressBar.Value = 1f;
+            }
         }
 
         private string FindRoot()
@@ -140,17 +157,19 @@ namespace ssjj_main
             if (root == null)
             {
                 //启动失败
-                Debug.Print("启动失败：没有找到生死狙击程序");
+                label.Content = "启动失败：没有找到生死狙击程序";
                 return;
             }
+
             var error = FixBattles(root);
             if (!string.IsNullOrEmpty(error))
             {
                 //启动失败
-                Debug.Print("启动失败：" + error);
+                label.Content = "启动失败：" + error;
                 return;
             }
-            Debug.Print("启动成功");
+            button.Content = "启动成功";
+            button.IsEnabled = false;
         }
 
     }
