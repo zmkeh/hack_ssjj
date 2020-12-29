@@ -1,7 +1,7 @@
-﻿using System;
+﻿using ssjj_hack.Module;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using ssjj_hack.Module;
 
 namespace ssjj_hack
 {
@@ -148,7 +148,7 @@ namespace ssjj_hack
         public void InitPlugins()
         {
             AddPlugin<Settings>();
-            // AddPlugin<Viewer>();
+            AddPlugin<Viewer>();
             AddPlugin<PlayerMgr>();
             AddPlugin<Esp>();
             AddPlugin<Aim>();

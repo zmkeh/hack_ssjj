@@ -52,10 +52,15 @@ namespace ssjj_hack.Module
                 if (Input.GetMouseButton(0))
                 {
                     var delta = minPoint - center;
-                    Sim.Move(delta);
+                    // Sim.Move(delta);
                 }
             }
-
+            /*
+            Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.AccuracyOffset = 0;
+            Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.DefaultAccuracy = 0;
+            Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.MaxInaccuracy = 100;
+            Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.SpreadScaleY = 0;
+            */
         }
 
         void UpdateAccuracy()

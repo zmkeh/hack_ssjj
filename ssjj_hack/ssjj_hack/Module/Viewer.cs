@@ -1,11 +1,6 @@
-﻿using Assets.Scripts.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
 using UnityEngine;
 
 namespace ssjj_hack.Module
@@ -35,7 +30,7 @@ namespace ssjj_hack.Module
 
             if (GUILayout.Button("Refresh"))
             {
-                viewObj = new ViewObj(InputCollector.Instance);
+                viewObj = new ViewObj(Contexts.sharedInstance.player);
             }
 
             // Contexts.sharedInstance.player.lastWeapon.

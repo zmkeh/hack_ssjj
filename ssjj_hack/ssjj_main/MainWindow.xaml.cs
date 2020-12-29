@@ -157,7 +157,8 @@ namespace ssjj_main
             if (root == null)
             {
                 //启动失败
-                label.Content = "启动失败：没有找到生死狙击程序";
+                //label.Content = "启动失败：没有找到生死狙击程序";
+                MessageBox.Show("请先启动生死狙击游戏。", "启动失败", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -165,9 +166,11 @@ namespace ssjj_main
             if (!string.IsNullOrEmpty(error))
             {
                 //启动失败
-                label.Content = "启动失败：" + error;
+                //label.Content = "启动失败：" + error;
+                MessageBox.Show(error, "启动失败", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
             button.Content = "启动成功";
             button.IsEnabled = false;
         }

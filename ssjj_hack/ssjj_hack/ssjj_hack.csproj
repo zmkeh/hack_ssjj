@@ -80,7 +80,6 @@
   <ItemGroup>
     <Compile Include="Module\Aim.cs" />
     <Compile Include="Module\Viewer.cs" />
-    <Compile Include="Module\MyConsole.cs" />
     <Compile Include="Module\Esp.cs" />
     <Compile Include="Extensions\BaseExtension.cs" />
     <Compile Include="Extensions\CollectionExtension.cs" />
@@ -104,7 +103,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetDir)$(ProjectName).dll" "D:\games\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetDir)$(ProjectName).dll" "E:\Program Files (x86)\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
