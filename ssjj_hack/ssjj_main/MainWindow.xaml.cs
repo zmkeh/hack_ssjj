@@ -319,6 +319,7 @@ namespace ssjj_main
             esp_friendly.IsEnabled = Settings.isEsp && all_enable;
             esp_hp.IsEnabled = Settings.isEsp && all_enable;
             esp_box.IsEnabled = Settings.isEsp && all_enable;
+            esp_boneline.IsEnabled = Settings.isEsp && all_enable;
             esp_airline.IsEnabled = Settings.isEsp && all_enable;
 
             aim.IsEnabled = all_enable;

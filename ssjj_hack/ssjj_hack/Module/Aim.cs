@@ -31,6 +31,8 @@ namespace ssjj_hack.Module
                     continue;
                 if (!p.root)
                     continue;
+                if (!p.isAlive)
+                    continue;
                 if (!p.root.gameObject.activeInHierarchy)
                     continue;
                 if (!Settings.isEspFriendly && p.isFriend)

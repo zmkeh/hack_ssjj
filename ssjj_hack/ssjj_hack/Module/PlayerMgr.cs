@@ -62,20 +62,65 @@ namespace ssjj_hack.Module
         public Transform root;
 
         public bool isCached = false;
-        public bool isFriend = false;
+        public bool isFriend => GetIsFriend();
+        public bool isAlive => IsAlive();
+        public float hp => GetHp();
+        public float hpMax => GetHpMax();
+
+        private bool GetIsFriend()
+        {
+            var p = GetEntity();
+            return p != null && p.GetTeam() > 0 && p.GetTeam() == Contexts.sharedInstance.player.myPlayerEntity.GetTeam();
+        }
+
+        private bool IsAlive()
+        {
+            var p = GetEntity();
+            return p != null && !p.IsDead();
+        }
+
+        private float GetHp()
+        {
+            var p = GetEntity();
+            return p.basicInfo.Current.Hp;
+        }
+
+        private float GetHpMax()
+        {
+            var p = GetEntity();
+            return p.basicInfo.Current.MaxHp;
+        }
+
+        private PlayerEntity GetEntity()
+        {
+            foreach (var e in Contexts.sharedInstance.player.GetEntities())
+            {
+                var p = e as PlayerEntity;
+                if (p.basicInfo.PlayerName == root.name)
+                {
+                    return p;
+                }
+            }
+            return null;
+        }
 
         public PlayerModel(Transform root)
         {
             this.root = root;
+            CacheBones();
+
             /*
             Log.Print(" ------------------------------------------------ ");
-            foreach (var t in root.GetComponentsInChildren<Transform>())
+            foreach (var e in Contexts.sharedInstance.player.GetEntities())
             {
-                Log.Print(t.GetPath());
+                var p = e as PlayerEntity;
+                if (p.basicInfo.PlayerName == root.name)
+                {
+                    Log.Print("TEAM: " + p.GetTeam());
+                }
             }
             Log.Print(" ------------------------------------------------ ");
             */
-            CacheBones();
         }
 
         public void CacheBones()

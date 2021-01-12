@@ -29,6 +29,8 @@ namespace ssjj_hack.Module
                     continue;
                 if (!p.root)
                     continue;
+                if (!p.isAlive)
+                    continue;
                 if (!p.root.gameObject.activeInHierarchy)
                     continue;
                 if (!Settings.isEspFriendly && p.isFriend)
@@ -41,12 +43,14 @@ namespace ssjj_hack.Module
                 }
                 */
 
+                var color = p.isFriend ? Color.green : Color.red;
+
                 if (Settings.isEspBox)
                 {
                     var rect = p.GetRect();
                     if (rect.height != 0)
                     {
-                        D_R(p.GetRect(), Color.green);
+                        D_R(p.GetRect(), color);
                     }
                 }
 
@@ -54,7 +58,7 @@ namespace ssjj_hack.Module
                 {
                     foreach (var line in p.GetLines())
                     {
-                        D_L(line, Color.green);
+                        D_L(line, color);
                     }
                 }
 
@@ -65,7 +69,27 @@ namespace ssjj_hack.Module
                     {
                         var boxTopCenter = new Vector2(rect.x, rect.top);
                         var screenTopCenter = new Vector2(Screen.width * 0.5f, Screen.height);
-                        D_L(new TLine(boxTopCenter, screenTopCenter), Color.red);
+                        D_L(new TLine(boxTopCenter, screenTopCenter), color);
+                    }
+                }
+
+                if (Settings.isEspHp)
+                {
+                    var rect = p.GetRect();
+                    if (rect.height != 0)
+                    {
+                        var x = rect.right + 4;
+                        var y = rect.bottom + 1;
+                        var h = (rect.height - 2) * p.hp / p.hpMax;
+                        var p1 = new Vector2(x, y);
+                        var p2 = new Vector2(x, y + h);
+                        D_L(new TLine(p1, p2), color);
+                        p1.x += 1; p2.x += 1;
+                        D_L(new TLine(p1, p2), color);
+                        p1.x += 1; p2.x += 1;
+                        D_L(new TLine(p1, p2), color);
+                        var bgRect = new TRect(x + 1, rect.center.y, 5, rect.height);
+                        D_R(bgRect, Color.black);
                     }
                 }
             }

@@ -31,6 +31,7 @@ namespace ssjj_hack
 
         public static void Print(string msg)
         {
+            return;
             var _date = DateTime.Now.ToString("HH:mm:ss.ms");
             File.AppendAllText(file, $"[{_date}] {msg}\r\n");
         }

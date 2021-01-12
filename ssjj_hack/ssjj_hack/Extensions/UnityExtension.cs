@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 namespace ssjj_hack
 {
     public static class UnityExtension
@@ -20,6 +19,7 @@ namespace ssjj_hack
             return comp;
         }
 
+        /*
         public static void SetAlpha(this Graphic gra, float alpha)
         {
             var c = gra.color;
@@ -36,7 +36,7 @@ namespace ssjj_hack
             }
             //var sprite = ResUtil.Load<Sprite>(name);
             //gra.sprite = sprite;
-        }
+        }*/
 
         //Breadth-first search
         public static Transform FindChildDeep(this Transform aParent, string aName)
