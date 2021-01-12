@@ -33,14 +33,30 @@ namespace ssjj_hack.Module
                     continue;
                 if (!p.root.gameObject.activeInHierarchy)
                     continue;
-                var points = p.GetPoints();
-                if (points.Count <= 3)
+                if (!Settings.isEspFriendly && p.isFriend)
                     continue;
-                var point = (points[2].center + points[3].center) / 2;
-                if (Settings.aimPos == AimPos.CHEST)
+
+                Vector2 point;
+                if (Settings.aimPos == AimPos.HEAD)
                 {
-                    point = points[3].center;
+                    var p1 = p.u_head.GetUIPos();
+                    var p2 = p.d_head.GetUIPos();
+                    if (p1.z <= 0 || p2.z <= 0)
+                        continue;
+                    point = (p1 + p2) * 0.5f;
                 }
+                else if (Settings.aimPos == AimPos.CHEST)
+                {
+                    var p3 = p.clavicle.GetUIPos();
+                    if (p3.z <= 0)
+                        continue;
+                    point = p3;
+                }
+                else
+                {
+                    continue;
+                }
+
                 var dist = Vector2.Distance(point, center);
                 if (dist < minDist)
                 {
@@ -54,7 +70,7 @@ namespace ssjj_hack.Module
             if (Settings.isAimCircle)
             {
                 var c = new TCircle(center, range);
-                GizmosPro.DrawCircle(c, Color.red);
+                GizmosPro.DrawCircle(c, Color.gray);
             }
 
             if (minDist <= range)
@@ -62,7 +78,7 @@ namespace ssjj_hack.Module
                 if (Settings.isAimLine)
                 {
                     var l = new TLine(minPoint, center);
-                    GizmosPro.DrawLine(l.from, l.to, Color.red);
+                    GizmosPro.DrawLine(l.from, l.to, Color.gray);
                 }
 
                 if (Input.GetMouseButton(0))
@@ -103,38 +119,5 @@ namespace ssjj_hack.Module
 
 
 
-        public static Vector3 GetNearstPointInLine(Vector3 start, Vector3 end, Vector3 targetPoint, out float factor, int needExtend = -1)
-        {
-            Vector3 _delta = end - start;
-            if (_delta == Vector3.zero)
-            {
-                factor = 0;
-                return start;
-            }
-            factor = (Vector3.Dot(targetPoint, _delta) - (Vector3.Dot(start, _delta))) / (_delta.sqrMagnitude);
-            if ((factor >= 0 && factor <= 1) || needExtend == 2)
-            {
-                return start + _delta * factor;
-            }
-            else
-            {
-                if (needExtend == -1)
-                {
-                    if (factor < 0) return start;
-                    if (factor > 1) return end;
-                }
-                else if (needExtend == 0)
-                {
-                    if (factor < 0) return start + _delta * factor;
-                    if (factor > 1) return end;
-                }
-                else if (needExtend == 1)
-                {
-                    if (factor < 0) return start;
-                    if (factor > 1) return start + _delta * factor;
-                }
-            }
-            return Vector3.zero;
-        }
     }
 }

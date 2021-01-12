@@ -31,6 +31,8 @@ namespace ssjj_hack.Module
                     continue;
                 if (!p.root.gameObject.activeInHierarchy)
                     continue;
+                if (!Settings.isEspFriendly && p.isFriend)
+                    continue;
 
                 /*
                 foreach (var point in p.GetPoints())
@@ -38,6 +40,15 @@ namespace ssjj_hack.Module
                     D_C(point, Color.black);
                 }
                 */
+
+                if (Settings.isEspBox)
+                {
+                    var rect = p.GetRect();
+                    if (rect.height != 0)
+                    {
+                        D_R(p.GetRect(), Color.green);
+                    }
+                }
 
                 if (Settings.isEspBoneLine)
                 {
@@ -47,12 +58,14 @@ namespace ssjj_hack.Module
                     }
                 }
 
-                if (Settings.isEspBox)
+                if (Settings.isEspAirLine)
                 {
                     var rect = p.GetRect();
                     if (rect.height != 0)
                     {
-                        D_R(p.GetRect(), Color.green);
+                        var boxTopCenter = new Vector2(rect.x, rect.top);
+                        var screenTopCenter = new Vector2(Screen.width * 0.5f, Screen.height);
+                        D_L(new TLine(boxTopCenter, screenTopCenter), Color.red);
                     }
                 }
             }

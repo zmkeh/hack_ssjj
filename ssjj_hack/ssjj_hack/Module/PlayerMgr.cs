@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace ssjj_hack.Module
@@ -9,12 +6,10 @@ namespace ssjj_hack.Module
     public class PlayerMgr : ModuleBase
     {
         public List<PlayerModel> models = new List<PlayerModel>();
-        public static Camera camera = null;
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-            camera = Camera.main;
             Collet();
         }
 
@@ -67,16 +62,19 @@ namespace ssjj_hack.Module
         public Transform root;
 
         public bool isCached = false;
+        public bool isFriend = false;
 
         public PlayerModel(Transform root)
         {
             this.root = root;
+            /*
             Log.Print(" ------------------------------------------------ ");
             foreach (var t in root.GetComponentsInChildren<Transform>())
             {
                 Log.Print(t.GetPath());
             }
             Log.Print(" ------------------------------------------------ ");
+            */
             CacheBones();
         }
 
@@ -118,37 +116,18 @@ namespace ssjj_hack.Module
             isCached = true;
         }
 
-        private Vector3 _P(Vector3 v)
-        {
-            var cam = PlayerMgr.camera;
-            var uipos = cam.WorldToScreenPoint(v);
-            return uipos;
-        }
-
-        private Vector3 _P(Transform t)
-        {
-            return _P(t.position);
-        }
-
         private void AddPoint(List<TCircle> lst, Transform t)
         {
-            var p = _P(t);
+            var p = t.GetUIPos();
             if (p.z <= 0)
                 return;
             lst.Add(new TCircle(p, 1));
         }
 
-        public float GetHeight()
-        {
-            var p1 = _P(root);
-            var p2 = _P(u_head);
-            return p2.y - p1.y;
-        }
-
         public TRect GetRect()
         {
-            var p1 = _P(root.position);
-            var p2 = _P(u_head.position);
+            var p1 = root.GetUIPos();
+            var p2 = u_head.GetUIPos();
             var x = (p1.x + p2.x) * 0.5f;
             var y = (p1.y + p2.y) * 0.5f;
             var h = p2.y - p1.y;
@@ -184,8 +163,8 @@ namespace ssjj_hack.Module
 
         private void AddLine(List<TLine> lst, Transform t1, Transform t2)
         {
-            var p1 = _P(t1);
-            var p2 = _P(t2);
+            var p1 = t1.GetUIPos();
+            var p2 = t2.GetUIPos();
             if (p1.z <= 0 || p2.z <= 0)
                 return;
             lst.Add(new TLine(p1, p2));
