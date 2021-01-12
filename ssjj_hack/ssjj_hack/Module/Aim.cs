@@ -15,7 +15,6 @@ namespace ssjj_hack.Module
         {
             if (!Settings.isAim)
                 return;
-
             base.Update();
             UpdateAim();
         }
@@ -38,6 +37,10 @@ namespace ssjj_hack.Module
                 if (points.Count <= 3)
                     continue;
                 var point = (points[2].center + points[3].center) / 2;
+                if (Settings.aimPos == AimPos.CHEST)
+                {
+                    point = points[3].center;
+                }
                 var dist = Vector2.Distance(point, center);
                 if (dist < minDist)
                 {
@@ -46,27 +49,38 @@ namespace ssjj_hack.Module
                 }
             }
 
-            if (minDist <= Screen.width * 0.1f)
+
+            var range = Screen.height * 0.05f * Settings.aimRange;
+            if (Settings.isAimCircle)
             {
-                var l = new TLine(minPoint, center);
-                GizmosPro.DrawLine(l.from, l.to, Color.red);
+                var c = new TCircle(center, range);
+                GizmosPro.DrawCircle(c, Color.red);
+            }
+
+            if (minDist <= range)
+            {
+                if (Settings.isAimLine)
+                {
+                    var l = new TLine(minPoint, center);
+                    GizmosPro.DrawLine(l.from, l.to, Color.red);
+                }
 
                 if (Input.GetMouseButton(0))
                 {
                     var delta = minPoint - center;
-                    // Sim.Move(delta);
+                    Sim.Move(delta);
                 }
             }
+        }
+
+        void UpdateAccuracy()
+        {
             /*
             Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.AccuracyOffset = 0;
             Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.DefaultAccuracy = 0;
             Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.MaxInaccuracy = 100;
             Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.SpreadScaleY = 0;
             */
-        }
-
-        void UpdateAccuracy()
-        {
         }
 
 

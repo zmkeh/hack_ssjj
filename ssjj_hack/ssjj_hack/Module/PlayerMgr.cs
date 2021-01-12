@@ -9,10 +9,12 @@ namespace ssjj_hack.Module
     public class PlayerMgr : ModuleBase
     {
         public List<PlayerModel> models = new List<PlayerModel>();
+        public static Camera camera = null;
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            camera = Camera.main;
             Collet();
         }
 
@@ -47,8 +49,10 @@ namespace ssjj_hack.Module
         public Transform d_head;
 
         public Transform clavicle;
-        public Transform l_arm;
-        public Transform r_arm;
+        public Transform l_upperarm;
+        public Transform r_upperarm;
+        public Transform l_forearm;
+        public Transform r_forearm;
         public Transform l_hand;
         public Transform r_hand;
 
@@ -67,6 +71,12 @@ namespace ssjj_hack.Module
         public PlayerModel(Transform root)
         {
             this.root = root;
+            Log.Print(" ------------------------------------------------ ");
+            foreach (var t in root.GetComponentsInChildren<Transform>())
+            {
+                Log.Print(t.GetPath());
+            }
+            Log.Print(" ------------------------------------------------ ");
             CacheBones();
         }
 
@@ -79,8 +89,10 @@ namespace ssjj_hack.Module
             d_head = c.FindChildDeep("Bip01_Head");
 
             clavicle = c.FindChildDeep("Bip01_R_Clavicle");
-            l_arm = c.FindChildDeep("Bip01_L_UpperArm");
-            r_arm = c.FindChildDeep("Bip01_R_UpperArm");
+            l_upperarm = c.FindChildDeep("Bip01_L_UpperArm");
+            r_upperarm = c.FindChildDeep("Bip01_R_UpperArm");
+            l_forearm = c.FindChildDeep("Bip01_L_Forearm");
+            r_forearm = c.FindChildDeep("Bip01_R_Forearm");
             l_hand = c.FindChildDeep("Bip01_L_Hand");
             r_hand = c.FindChildDeep("Bip01_R_Hand");
 
@@ -95,7 +107,8 @@ namespace ssjj_hack.Module
 
             if (spine == null || neck == null
                 || d_head == null || u_head == null
-                || l_arm == null || r_arm == null
+                || l_upperarm == null || r_upperarm == null
+                || l_forearm == null || r_forearm == null
                 || l_hand == null || r_hand == null
                 || clavicle == null || pelvis == null
                 || l_thigh == null || r_thigh == null
@@ -105,11 +118,16 @@ namespace ssjj_hack.Module
             isCached = true;
         }
 
+        private Vector3 _P(Vector3 v)
+        {
+            var cam = PlayerMgr.camera;
+            var uipos = cam.WorldToScreenPoint(v);
+            return uipos;
+        }
+
         private Vector3 _P(Transform t)
         {
-            var cam = Camera.main;
-            var uipos = cam.WorldToScreenPoint(t.position);
-            return uipos;
+            return _P(t.position);
         }
 
         private void AddPoint(List<TCircle> lst, Transform t)
@@ -120,6 +138,26 @@ namespace ssjj_hack.Module
             lst.Add(new TCircle(p, 1));
         }
 
+        public float GetHeight()
+        {
+            var p1 = _P(root);
+            var p2 = _P(u_head);
+            return p2.y - p1.y;
+        }
+
+        public TRect GetRect()
+        {
+            var p1 = _P(root.position);
+            var p2 = _P(u_head.position);
+            var x = (p1.x + p2.x) * 0.5f;
+            var y = (p1.y + p2.y) * 0.5f;
+            var h = p2.y - p1.y;
+            var w = h * 0.4f;
+            if (p1.z <= 0 || p2.z <= 0)
+                return default;
+            return new TRect(x, y, w, h);
+        }
+
         public List<TCircle> GetPoints()
         {
             var points = new List<TCircle>();
@@ -128,8 +166,10 @@ namespace ssjj_hack.Module
             AddPoint(points, d_head);
             AddPoint(points, u_head);
             AddPoint(points, clavicle);
-            AddPoint(points, l_arm);
-            AddPoint(points, r_arm);
+            AddPoint(points, l_upperarm);
+            AddPoint(points, r_upperarm);
+            AddPoint(points, r_forearm);
+            AddPoint(points, r_forearm);
             AddPoint(points, l_hand);
             AddPoint(points, r_hand);
             AddPoint(points, pelvis);
@@ -160,10 +200,12 @@ namespace ssjj_hack.Module
             AddLine(lines, neck, d_head);
             AddLine(lines, d_head, u_head);
 
-            AddLine(lines, clavicle, l_arm);
-            AddLine(lines, clavicle, r_arm);
-            AddLine(lines, l_arm, l_hand);
-            AddLine(lines, r_arm, r_hand);
+            AddLine(lines, clavicle, l_upperarm);
+            AddLine(lines, clavicle, r_upperarm);
+            AddLine(lines, l_upperarm, l_forearm);
+            AddLine(lines, r_upperarm, r_forearm);
+            AddLine(lines, l_forearm, l_hand);
+            AddLine(lines, r_forearm, r_hand);
 
             AddLine(lines, pelvis, l_thigh);
             AddLine(lines, pelvis, r_thigh);

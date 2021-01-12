@@ -22,16 +22,23 @@ namespace ssjj_main
 
         Lanzou lan = new Lanzou();
         DispatcherTimer timer = new DispatcherTimer();
+        DispatcherTimer timer2 = new DispatcherTimer();
+        private bool isReady = false;
+        private bool isStartup = false;
         private void Grid_Initialized(object sender, System.EventArgs e)
         {
             InitIni();
             Task.Run(lan.UpdateDLL);
-            label.Content = "准备中...";
+            button.Content = "准备中...";
             progressBar.Value = 0;
             button.IsEnabled = false;
             timer.Interval = new TimeSpan(100000);
             timer.Tick += OnTimer;
             timer.Start();
+
+            timer2.Interval = new TimeSpan(1000000);
+            timer2.Tick += OnTimer2;
+            timer2.Start();
         }
 
         private void InitIni()
@@ -53,24 +60,83 @@ namespace ssjj_main
         {
             if (lan.isDownloading)
             {
-                label.Content = $"准备中({(int)(progressBar.Value * 100)}%)...";
+                button.Content = $"准备中({(int)(progressBar.Value * 100)}%)...";
                 progressBar.Value += 0.0015f;
             }
             else
             {
-                label.Content = "准备完成";
+                button.Content = "启动";
                 timer.Stop();
                 button.IsEnabled = true;
                 progressBar.Value = 1f;
+                isReady = true;
+                ViewUpdate();
             }
         }
 
+        private void OnTimer2(object sender, EventArgs e)
+        {
+            if (!isReady)
+                return;
+
+            // check settings
+            if (Settings.isEsp != (bool)esp.IsChecked
+                || Settings.isEspFriendly != (bool)esp_friendly.IsChecked
+                || Settings.isEspHp != (bool)esp_hp.IsChecked
+                || Settings.isEspBox != (bool)esp_box.IsChecked
+                || Settings.isEspBoneLine != (bool)esp_boneline.IsChecked
+                || Settings.isEspAirLine != (bool)esp_airline.IsChecked
+                || Settings.isAim != (bool)aim.IsChecked
+                || Settings.isAimCircle != (bool)aim_circle.IsChecked
+                || Settings.isAimLine != (bool)aim_line.IsChecked
+                || Settings.aimRange != (int)(aim_range.SelectedIndex)
+                || Settings.aimPos != (AimPos)aim_pos.SelectedIndex
+                || Settings.isNoRecoil != (bool)no_recoil.IsChecked
+                || Settings.isNoSpread != (bool)no_spread.IsChecked
+                || Settings.isWindowed != (bool)is_windowed.IsChecked)
+            {
+                ViewToSettings();
+                ViewUpdate();
+                Settings.Save();
+                if (isStartup)
+                {
+                    FixInis(FindRoot());
+                }
+            }
+        }
+
+        private string rootPath = "";
         private string FindRoot()
         {
-            var p = Process.GetProcessesByName("AirLobbyPreloader");
-            if (p == null || p.Length == 0)
-                return null;
-            return Path.GetDirectoryName(Path.GetDirectoryName(Helper.GetProcessFilename(p[0])));
+            if (string.IsNullOrEmpty(rootPath))
+            {
+                var p = Process.GetProcessesByName("AirLobbyPreloader");
+                if (p == null || p.Length == 0)
+                    return null;
+                rootPath = Path.GetDirectoryName(Path.GetDirectoryName(Helper.GetProcessFilename(p[0])));
+            }
+            return rootPath;
+        }
+
+        private string FixInis(string root)
+        {
+            var battle = root.Combine("battle");
+            if (!Directory.Exists(battle))
+                return "文件不存在：" + battle;
+            foreach (var d in new DirectoryInfo(battle).GetDirectories())
+            {
+                var ini = d.FullName.Combine("SSJJ_BattleClient_Unity_Data/StreamingAssets/settings.ini");
+                if (!File.Exists(ini))
+                {
+                    File.Create(ini).Close();
+                }
+                var err = SetIni(ini);
+                if (!string.IsNullOrEmpty(err))
+                {
+                    return err;
+                }
+            }
+            return null;
         }
 
         private string FixBattles(string root)
@@ -102,6 +168,16 @@ namespace ssjj_main
                 return err;
             }
 
+            var ini = path.Combine("SSJJ_BattleClient_Unity_Data/StreamingAssets/settings.ini");
+            if (!File.Exists(ini))
+            {
+                File.Create(ini).Close();
+            }
+            err = SetIni(ini);
+            if (!string.IsNullOrEmpty(err))
+            {
+                return err;
+            }
 
             var md5 = path.Combine("md5cache");
             if (!Directory.Exists(md5))
@@ -117,19 +193,46 @@ namespace ssjj_main
             return null;
         }
 
-        private string GetDll()
-        {
-            return new FileInfo("Assembly-CSharp.dll").FullName;
-        }
-
         private string SetDll(string dll)
         {
-            var newDll = GetDll();
+            var newDll = "Assembly-CSharp.dll";
             if (!File.Exists(newDll))
                 return "文件不存在：" + newDll;
             try
             {
                 File.Copy(newDll, dll, true);
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+            return null;
+        }
+
+        private string SetHackDll(string dll)
+        {
+            var newDll = "hack.dll";
+            if (!File.Exists(newDll))
+                return "文件不存在：" + newDll;
+            try
+            {
+                File.Copy(newDll, dll, true);
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+            return null;
+        }
+
+        private string SetIni(string ini)
+        {
+            var rawIni = Settings.iniPath;
+            if (!File.Exists(ini))
+                return "文件不存在：" + ini;
+            try
+            {
+                File.Copy(rawIni, ini, true);
             }
             catch (Exception e)
             {
@@ -174,7 +277,6 @@ namespace ssjj_main
             if (root == null)
             {
                 //启动失败
-                //label.Content = "启动失败：没有找到生死狙击程序";
                 MessageBox.Show("请先启动生死狙击游戏。", "启动失败", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
@@ -183,32 +285,71 @@ namespace ssjj_main
             if (!string.IsNullOrEmpty(error))
             {
                 //启动失败
-                //label.Content = "启动失败：" + error;
                 MessageBox.Show(error, "启动失败", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             button.Content = "启动成功";
             button.IsEnabled = false;
-        }
-
-        private void settings_changed(object sender, RoutedEventArgs e)
-        {
-            ViewToSettings();
-            ViewUpdate();
-            Settings.Save();
+            isStartup = true;
         }
 
         private void ViewUpdate()
         {
-            esp_friendly.IsEnabled = Settings.isEsp;
+            esp.IsChecked = Settings.isEsp;
+            esp_friendly.IsChecked = Settings.isEspFriendly;
+            esp_hp.IsChecked = Settings.isEspHp;
+            esp_box.IsChecked = Settings.isEspBox;
+            esp_boneline.IsChecked = Settings.isEspBoneLine;
+            esp_airline.IsChecked = Settings.isEspAirLine;
+
+            aim.IsChecked = Settings.isAim;
+            aim_circle.IsChecked = Settings.isAimCircle;
+            aim_line.IsChecked = Settings.isAimLine;
+            aim_range.SelectedIndex = Settings.aimRange;
+            aim_pos.SelectedIndex = (int)Settings.aimPos;
+
+            no_recoil.IsChecked = Settings.isNoRecoil;
+            no_spread.IsChecked = Settings.isNoSpread;
+            is_windowed.IsChecked = Settings.isWindowed;
+
+            // enable
+            bool all_enable = isReady;
+            esp.IsEnabled = all_enable;
+            esp_friendly.IsEnabled = Settings.isEsp && all_enable;
+            esp_hp.IsEnabled = Settings.isEsp && all_enable;
+            esp_box.IsEnabled = Settings.isEsp && all_enable;
+            esp_airline.IsEnabled = Settings.isEsp && all_enable;
+
+            aim.IsEnabled = all_enable;
+            aim_circle.IsEnabled = Settings.isAim && all_enable;
+            aim_line.IsEnabled = Settings.isAim && all_enable;
+            aim_range.IsEnabled = Settings.isAim && all_enable;
+            aim_pos.IsEnabled = Settings.isAim && all_enable;
+
+            no_recoil.IsEnabled = all_enable;
+            no_spread.IsEnabled = all_enable;
+            is_windowed.IsEnabled = all_enable;
         }
 
         private void ViewToSettings()
         {
-            Settings.isAim = (bool)aim.IsChecked;
             Settings.isEsp = (bool)esp.IsChecked;
             Settings.isEspFriendly = (bool)esp_friendly.IsChecked;
+            Settings.isEspHp = (bool)esp_hp.IsChecked;
+            Settings.isEspBox = (bool)esp_box.IsChecked;
+            Settings.isEspBoneLine = (bool)esp_boneline.IsChecked;
+            Settings.isEspAirLine = (bool)esp_airline.IsChecked;
+
+            Settings.isAim = (bool)aim.IsChecked;
+            Settings.isAimCircle = (bool)aim_circle.IsChecked;
+            Settings.isAimLine = (bool)aim_line.IsChecked;
+            Settings.aimRange = aim_range.SelectedIndex;
+            Settings.aimPos = (AimPos)aim_pos.SelectedIndex;
+
+            Settings.isNoRecoil = (bool)no_recoil.IsChecked;
+            Settings.isNoSpread = (bool)no_spread.IsChecked;
+            Settings.isWindowed = (bool)is_windowed.IsChecked;
         }
     }
 
