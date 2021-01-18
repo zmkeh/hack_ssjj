@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Assets.Sources.Framework.System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -30,10 +32,8 @@ namespace ssjj_hack.Module
 
             if (GUILayout.Button("Refresh"))
             {
-                viewObj = new ViewObj(Contexts.sharedInstance.player);
+                viewObj = new ViewObj(GameModuleFeature.Instance);
             }
-
-            // Contexts.sharedInstance.player.lastWeapon.
 
             if (viewObj != null)
             {
@@ -62,23 +62,66 @@ namespace ssjj_hack.Module
 
     public class ViewObj
     {
-        public bool isFoldout { get; set; }
+        public static BindingFlags flags => BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-        public string name;
         public object value;
         public ViewObj parent;
-        public int depth;
+        public bool isFoldout;
+
+        public Type type => _GetType();
+        public string name => _GetName();
+        public string typeName => _GetTypeName();
+        public int depth => parent == null ? 0 : parent.depth + 1;
 
         public bool isField => fieldInfo != null;
+        public bool isProp => propertyInfo != null;
         public bool isPrim => type != null && TypePrim(type);
         public bool isValid => type != null && !isException;
-        public Type type => value != null ? value.GetType() : fieldInfo != null ? fieldInfo.FieldType : propertyInfo != null ? propertyInfo.PropertyType : null;
-        public static BindingFlags flags => BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+        public bool isModiable => isPrim && (isField || isProp) && parent != null;
+        public bool isArrayItem => arrayIndex >= 0;
 
         public FieldInfo fieldInfo;
         public PropertyInfo propertyInfo;
+        public int arrayIndex = -1;
+        public Type arrayItemType => parent == null ? null : parent.type;
         public List<ViewObj> children = null;
         public bool isException = false;
+        public string exMsg = "";
+
+        private Type _GetType()
+        {
+            if (value != null)
+                return value.GetType();
+            if (isArrayItem)
+                return arrayItemType;
+            if (isField)
+                return fieldInfo.FieldType;
+            if (isProp)
+                return propertyInfo.PropertyType;
+            return null;
+        }
+
+        private string _GetName()
+        {
+            if (isArrayItem)
+                return $"item{arrayIndex:D3}";
+            if (isField)
+                return fieldInfo.Name;
+            if (isProp)
+                return propertyInfo.Name;
+            if (value != null)
+                return value.GetType().Name;
+            return "null";
+        }
+
+        private string _GetTypeName()
+        {
+            if (type.Name == "List`1")
+            {
+               return $"List<{type.GetGenericArguments()[0].Name}";
+            }
+            return type.Name;
+        }
 
         public Rect GetRect()
         {
@@ -106,7 +149,7 @@ namespace ssjj_hack.Module
             if (isException)
             {
                 GUI.contentColor = Color.red;
-                GUI.Box(rect, " " + name + " -> Exception");
+                GUI.Box(rect, " " + name + " -> Exception: " + exMsg);
                 return;
             }
 
@@ -178,11 +221,12 @@ namespace ssjj_hack.Module
                 {
                     GUI.TextField(rect2, value.ToString());
                 }
+
             }
             else
             {
                 GUI.contentColor = Color.green;
-                if (GUI.Button(rect, (isFoldout ? "▼" : "▶") + name + "(" + type.Name + ")"))
+                if (GUI.Button(rect, (isFoldout ? "▼" : "▶") + name + "(" + typeName + ")"))
                 {
                     isFoldout = !isFoldout;
                     if (!isFoldout)
@@ -202,56 +246,55 @@ namespace ssjj_hack.Module
             }
         }
 
-        public void Reset(FieldInfo info, ViewObj parent)
-        {
-            this.fieldInfo = info;
-            this.parent = parent;
-            this.name = info.Name;
-            try
-            {
-                value = info.GetValue(parent.value);
-            }
-            catch
-            {
-                isException = true;
-            }
-        }
-        public void Reset(PropertyInfo info, ViewObj parent)
-        {
-            this.propertyInfo = info;
-            this.parent = parent;
-            this.name = info.Name;
-            try
-            {
-                value = info.GetValue(parent.value, null);
-            }
-            catch
-            {
-                isException = true;
-            }
-        }
-
         public ViewObj(object obj)
         {
-            this.value = obj;
-            this.depth = 0;
+            value = obj;
+            Reset();
         }
 
         public ViewObj(FieldInfo info, ViewObj parent)
         {
-            Reset(info, parent);
-            Init();
+            this.fieldInfo = info;
+            this.parent = parent;
+            Reset();
         }
 
         public ViewObj(PropertyInfo info, ViewObj parent)
         {
-            Reset(info, parent);
-            Init();
+            this.propertyInfo = info;
+            this.parent = parent;
+            Reset();
         }
 
-        private void Init()
+        public ViewObj(int arrayIndex, ViewObj parent)
         {
-            this.depth = parent.depth + 1;
+            this.arrayIndex = arrayIndex;
+            this.parent = parent;
+            Reset();
+        }
+
+        public void Reset()
+        {
+            try
+            {
+                if (isArrayItem)
+                {
+                    value = (parent.value as IList)[arrayIndex];
+                }
+                else if (isField)
+                {
+                    value = fieldInfo.GetValue(parent.value);
+                }
+                else if (isProp)
+                {
+                    value = propertyInfo.GetValue(parent.value, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                exMsg = ex.Message;
+                isException = true;
+            }
         }
 
         public void GetChildren()
@@ -259,15 +302,25 @@ namespace ssjj_hack.Module
             if (children == null)
             {
                 children = new List<ViewObj>();
-
-                foreach (var info in type.GetFields(flags))
+                if (type.IsArray && value != null)
                 {
-                    children.Add(new ViewObj(info, this));
+                    var lst = value as IList;
+                    for (int i = 0; i < lst.Count; i++)
+                    {
+                        children.Add(new ViewObj(i, this));
+                    }
                 }
-
-                foreach (var info in type.GetProperties(flags))
+                else
                 {
-                    children.Add(new ViewObj(info, this));
+                    foreach (var info in type.GetFields(flags))
+                    {
+                        children.Add(new ViewObj(info, this));
+                    }
+
+                    foreach (var info in type.GetProperties(flags))
+                    {
+                        children.Add(new ViewObj(info, this));
+                    }
                 }
                 children.Sort((a, b) => (a.isValid != b.isValid) ? b.isValid.CompareTo(a.isValid) : (a.isPrim != b.isPrim) ? a.isPrim.CompareTo(b.isPrim) : a.name.CompareTo(b.name));
             }
@@ -275,14 +328,7 @@ namespace ssjj_hack.Module
             {
                 foreach (var c in children)
                 {
-                    if (c.isField)
-                    {
-                        c.Reset(type.GetField(c.name, flags), this);
-                    }
-                    else
-                    {
-                        c.Reset(type.GetProperty(c.name, flags), this);
-                    }
+                    c.Reset();
                 }
             }
         }
@@ -295,24 +341,6 @@ namespace ssjj_hack.Module
                         || t == typeof(Vector3)
                         || t == typeof(Rect)
                         || t == typeof(Quaternion);
-        }
-
-        public static bool TypeValid(Type t)
-        {
-            if (t.IsArray)
-                return false;
-            if (t.IsGenericType)
-            {
-                if (t.Name.StartsWith("List`"))
-                    return false;
-                else if (t.Name.StartsWith("Dictionary`"))
-                    return false;
-                else if (t.Name.StartsWith("Queue`"))
-                    return false;
-                else if (t.Name.StartsWith("CircularBuffer`"))
-                    return false;
-            }
-            return true;
         }
     }
 }

@@ -56,8 +56,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ReflectionExtension.cs" />
     <Compile Include="Ini.cs" />
     <Compile Include="Module\Aim.cs" />
+    <Compile Include="Module\Fun.cs" />
     <Compile Include="Module\SettingsModule.cs" />
     <Compile Include="Module\Viewer.cs" />
     <Compile Include="Module\Esp.cs" />

@@ -66,6 +66,7 @@ namespace ssjj_hack.Module
         public bool isAlive => IsAlive();
         public float hp => GetHp();
         public float hpMax => GetHpMax();
+        public string name => GetName();
 
         private bool GetIsFriend()
         {
@@ -82,13 +83,19 @@ namespace ssjj_hack.Module
         private float GetHp()
         {
             var p = GetEntity();
-            return p.basicInfo.Current.Hp;
+            return p == null ? 0 : p.basicInfo.Current.Hp;
+        }
+
+        private string GetName()
+        {
+            var p = GetEntity();
+            return p == null ? "" : p.basicInfo.PlayerName;
         }
 
         private float GetHpMax()
         {
             var p = GetEntity();
-            return p.basicInfo.Current.MaxHp;
+            return p == null ? 1 : p.basicInfo.Current.MaxHp;
         }
 
         private PlayerEntity GetEntity()
@@ -111,6 +118,12 @@ namespace ssjj_hack.Module
 
             /*
             Log.Print(" ------------------------------------------------ ");
+            foreach (var e in root.GetComponentsInChildren<Transform>())
+            {
+                Log.Print(e.GetPath());
+            }
+            Log.Print(" ------------------------------------------------ ");
+            Log.Print(" ------------------------------------------------ ");
             foreach (var e in Contexts.sharedInstance.player.GetEntities())
             {
                 var p = e as PlayerEntity;
@@ -128,8 +141,8 @@ namespace ssjj_hack.Module
             var c = root;
             spine = c.FindChildDeep("Bip01_Spine");
             neck = c.FindChildDeep("Bip01_Neck");
-            u_head = c.FindChildDeep("Bip01_HeadNub");
             d_head = c.FindChildDeep("Bip01_Head");
+            u_head = d_head.FindChildDeep("Bip01_HeadNub") ?? d_head.FindChildDeep("Bone01");
 
             clavicle = c.FindChildDeep("Bip01_R_Clavicle");
             l_upperarm = c.FindChildDeep("Bip01_L_UpperArm");
@@ -173,12 +186,12 @@ namespace ssjj_hack.Module
         {
             var p1 = root.GetUIPos();
             var p2 = u_head.GetUIPos();
+            if (p1.z <= 0 || p2.z <= 0)
+                return new TRect();
             var x = (p1.x + p2.x) * 0.5f;
             var y = (p1.y + p2.y) * 0.5f;
             var h = p2.y - p1.y;
             var w = h * 0.4f;
-            if (p1.z <= 0 || p2.z <= 0)
-                return default;
             return new TRect(x, y, w, h);
         }
 

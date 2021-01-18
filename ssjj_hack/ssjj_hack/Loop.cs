@@ -152,6 +152,7 @@ namespace ssjj_hack
             AddPlugin<PlayerMgr>();
             AddPlugin<Esp>();
             AddPlugin<Aim>();
+            AddPlugin<Fun>();
         }
     }
 }

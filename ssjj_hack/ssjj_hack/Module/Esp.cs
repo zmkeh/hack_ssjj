@@ -48,6 +48,7 @@ namespace ssjj_hack.Module
                 if (Settings.isEspBox)
                 {
                     var rect = p.GetRect();
+                    // Log.Print(p.name + " : " + rect);
                     if (rect.height != 0)
                     {
                         D_R(p.GetRect(), color);
@@ -89,7 +90,7 @@ namespace ssjj_hack.Module
                         p1.x += 1; p2.x += 1;
                         D_L(new TLine(p1, p2), color);
                         var bgRect = new TRect(x + 1, rect.center.y, 5, rect.height);
-                        D_R(bgRect, Color.black);
+                        D_R(bgRect, Color.black * 0.7f);
                     }
                 }
             }

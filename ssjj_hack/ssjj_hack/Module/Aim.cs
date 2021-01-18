@@ -83,7 +83,7 @@ namespace ssjj_hack.Module
                     GizmosPro.DrawLine(l.from, l.to, Color.gray);
                 }
 
-                if (Input.GetMouseButton(0))
+                if (Input.GetMouseButton(1))
                 {
                     var delta = minPoint - center;
                     Sim.Move(delta);

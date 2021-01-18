@@ -62,12 +62,16 @@ namespace ssjj_hack
 
         public static Vector3 GetUIPos(this Transform tranform)
         {
+            if (tranform == null)
+                return Vector3.zero;
             return tranform.position.ToUIPos();
         }
 
         public static Vector3 ToUIPos(this Vector3 vector3)
         {
             var cam = camera;
+            if (cam == null)
+                return Vector3.zero;
             var uipos = cam.WorldToScreenPoint(vector3);
             return uipos;
         }

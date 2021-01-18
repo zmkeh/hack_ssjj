@@ -31,7 +31,6 @@ namespace ssjj_hack
 
         public static void Print(string msg)
         {
-            return;
             var _date = DateTime.Now.ToString("HH:mm:ss.ms");
             File.AppendAllText(file, $"[{_date}] {msg}\r\n");
         }
@@ -48,7 +47,7 @@ namespace ssjj_hack
 
         public static void Print(Exception ex)
         {
-            Print(ex.Message + "\r\n" + ex.StackTrace);
+            Print("err: " + ex.Message + "\r\n" + ex.StackTrace);
         }
     }
 }
