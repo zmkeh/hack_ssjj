@@ -1,4 +1,5 @@
 ﻿using Hzexe.Lanzou;
+using ssjj_hack.Module;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -24,12 +25,19 @@ namespace ssjj_main
             }
             if (item == null)
                 return;
+            var _verdir = Settings.root.Combine(item.name);
+            if (!Directory.Exists(_verdir))
+                Directory.CreateDirectory(_verdir);
             var res2 = await client.LsFilesAsync(item.fol_id);
             foreach (var f in res2.text)
             {
-                var share = await client.GetShareUrl(f.id);
-                var url = await client.GetDurl(share.info.url);
-                var down = await DownloadFile(url, f.name);
+                var _fpath = _verdir.Combine(f.name);
+                if (!File.Exists(_fpath))
+                {
+                    var share = await client.GetShareUrl(f.id);
+                    var url = await client.GetDurl(share.info.url);
+                    var down = await DownloadFile(url, _fpath);
+                }
             }
             isDownloading = false;
         }

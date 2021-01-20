@@ -30,9 +30,19 @@ namespace ssjj_hack.Module
             GUI.skin.box.alignment = TextAnchor.MiddleLeft;
             GUI.skin.button.alignment = TextAnchor.MiddleLeft;
 
-            if (GUILayout.Button("Refresh"))
+            if (viewObj != null)
+            {
+                GUI.Box(new Rect(0, 0, 700, Screen.height), "");
+                GUI.Box(new Rect(0, 0, 700, Screen.height), "");
+            }
+
+            if (viewObj == null && GUILayout.Button("Collect"))
             {
                 viewObj = new ViewObj(GameModuleFeature.Instance);
+            }
+            else if (viewObj != null && GUILayout.Button("Close"))
+            {
+                viewObj = null;
             }
 
             if (viewObj != null)
@@ -118,7 +128,7 @@ namespace ssjj_hack.Module
         {
             if (type.Name == "List`1")
             {
-               return $"List<{type.GetGenericArguments()[0].Name}";
+                return $"List<{type.GetGenericArguments()[0].Name}";
             }
             return type.Name;
         }

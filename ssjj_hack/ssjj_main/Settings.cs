@@ -28,7 +28,8 @@
         public static int windowWidth = 1280;
         public static int windowHeight = 720;
 
-        public static string iniPath => "settings.ini";
+        public static string root => "ssjj_libs";
+        public static string iniPath => $"{root}/settings.ini";
         static IniFile ini = new IniFile();
 
         public static void Read()

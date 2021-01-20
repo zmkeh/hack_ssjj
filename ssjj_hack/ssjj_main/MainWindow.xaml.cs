@@ -43,6 +43,9 @@ namespace ssjj_main
 
         private void InitIni()
         {
+            var _rootdir = "ssjj_libs";
+            if (!Directory.Exists(_rootdir))
+                Directory.CreateDirectory(_rootdir);
             if (!File.Exists(Settings.iniPath))
             {
                 File.Create(Settings.iniPath).Close();
@@ -60,7 +63,7 @@ namespace ssjj_main
         {
             if (lan.isDownloading)
             {
-                button.Content = $"准备中({(int)(progressBar.Value * 100)}%)...";
+                button.Content = $"更新中({(int)(progressBar.Value * 100)}%)...";
                 progressBar.Value += 0.0015f;
             }
             else
@@ -168,17 +171,6 @@ namespace ssjj_main
                 return err;
             }
 
-            var ini = path.Combine("SSJJ_BattleClient_Unity_Data/StreamingAssets/settings.ini");
-            if (!File.Exists(ini))
-            {
-                File.Create(ini).Close();
-            }
-            err = SetIni(ini);
-            if (!string.IsNullOrEmpty(err))
-            {
-                return err;
-            }
-
             var md5 = path.Combine("md5cache");
             if (!Directory.Exists(md5))
             {
@@ -190,14 +182,46 @@ namespace ssjj_main
                 return err;
             }
 
+            var ini = path.Combine("SSJJ_BattleClient_Unity_Data/StreamingAssets/settings.ini");
+            if (!File.Exists(ini))
+            {
+                File.Create(ini).Close();
+            }
+            err = SetIni(ini);
+            if (!string.IsNullOrEmpty(err))
+            {
+                return err;
+            }
+
+            var hack = path.Combine("SSJJ_BattleClient_Unity_Data/StreamingAssets/hack.dll");
+            if (!File.Exists(ini))
+            {
+                File.Create(ini).Close();
+            }
+            err = SetHackDll(hack);
+            if (!string.IsNullOrEmpty(err))
+            {
+                return err;
+            }
             return null;
+        }
+
+        private string GetVerDir()
+        {
+            var _dmax = "";
+            foreach (var d in Directory.GetDirectories(Settings.root))
+            {
+                if (d.CompareTo(_dmax) > 0)
+                    _dmax = d;
+            }
+            return _dmax;
         }
 
         private string SetDll(string dll)
         {
-            var newDll = "Assembly-CSharp.dll";
+            var newDll = GetVerDir().Combine("Assembly-CSharp.dll");
             if (!File.Exists(newDll))
-                return "文件不存在：" + newDll;
+                return null;
             try
             {
                 File.Copy(newDll, dll, true);
@@ -211,9 +235,9 @@ namespace ssjj_main
 
         private string SetHackDll(string dll)
         {
-            var newDll = "hack.dll";
+            var newDll = GetVerDir().Combine("hack.dll");
             if (!File.Exists(newDll))
-                return "文件不存在：" + newDll;
+                return null;
             try
             {
                 File.Copy(newDll, dll, true);
