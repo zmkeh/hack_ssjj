@@ -1,10 +1,10 @@
-﻿using Hzexe.Lanzou;
+﻿using Lanzou;
 using ssjj_hack.Module;
 using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static Hzexe.Lanzou.Model.Lanzou.GetDirResponse;
+using static Lanzou.GetDirResponse;
 
 namespace ssjj_main
 {
@@ -36,7 +36,7 @@ namespace ssjj_main
                 {
                     var share = await client.GetShareUrl(f.id);
                     var url = await client.GetDurl(share.info.url);
-                    var down = await DownloadFile(url, _fpath);
+                    var down = await DownloadFile(url.url, _fpath);
                 }
             }
             isDownloading = false;

@@ -1,65 +1,70 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Hzexe.Lanzou.Model.Lanzou
+namespace Lanzou
 {
-    public class GetDirResponse: ResponseBase
+    [Serializable]
+    public class GetFilesResponse : ResponseBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public InfoItem[] info { get; set; }
+        public int info;
         /// <summary>
-        /// 子目录集合
+        /// 
         /// </summary>
-        public TextItem[] text { get; set; }
-        public class InfoItem
-        {
-            /// <summary>
-            /// 
-            /// </summary>
-            public string name { get; set; }
-            /// <summary>
-            /// 
-            /// </summary>
-            public string folder_des { get; set; }
-            /// <summary>
-            /// 
-            /// </summary>
-            public int folderid { get; set; }
-            /// <summary>
-            /// 
-            /// </summary>
-            public int now { get; set; }
-        }
+        public TextItem[] text;
 
+        [Serializable]
         public class TextItem
         {
             /// <summary>
             /// 
             /// </summary>
-            public string onof { get; set; }
+            public string icon;
             /// <summary>
             /// 
             /// </summary>
-            public string folderlock { get; set; }
+            public string id;
             /// <summary>
             /// 
             /// </summary>
-            public string is_lock { get; set; }
+            public string name_all;
             /// <summary>
             /// 
             /// </summary>
-            public string name { get; set; }
+            public string name;
             /// <summary>
             /// 
             /// </summary>
-            public string fol_id { get; set; }
+            public string size;
+            /// <summary>
+            /// 21 分钟前
+            /// </summary>
+            public string time;
             /// <summary>
             /// 
             /// </summary>
-            public string folder_des { get; set; }
+            public string downs;
+            /// <summary>
+            /// 
+            /// </summary>
+            public string onof;
+            /// <summary>
+            /// 
+            /// </summary>
+            public string is_lock;
+            /// <summary>
+            /// 
+            /// </summary>
+            public string filelock;
+            /// <summary>
+            /// 
+            /// </summary>
+            public int is_des;
+            /// <summary>
+            /// 
+            /// </summary>
+            public int is_ico;
         }
     }
 }

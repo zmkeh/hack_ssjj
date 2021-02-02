@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Hzexe.Lanzou.Model.Lanzou
+namespace Lanzou
 {
+    [Serializable]
     public class GetLinkResponse : ResponseBase
     {
-        public string dom { get; set; }
+        public string dom;
 
-        public int inf { get; set; }
+        public int inf;
 
-        public string url { get; set; }
+        public string url;
 
         /// <summary>
         /// 完整地址

@@ -180,11 +180,11 @@ namespace ssjj_hack
             AddPlugin<PlayerMgr>();
             AddPlugin<Esp>();
             AddPlugin<Aim>();
-            AddPlugin<Fun>();
-            AddPlugin<Chat>();
+            // AddPlugin<Fun>();
+            // AddPlugin<Chat>();
             // AddPlugin<Punch>();
             // AddPlugin<Spread>();
-            AddPlugin<Module.Ping>();
+            // AddPlugin<Module.Ping>();
         }
     }
 }
