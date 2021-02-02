@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Windows;
 using static Lanzou.GetDirResponse;
 
 namespace ssjj_main
@@ -14,32 +15,39 @@ namespace ssjj_main
         public bool isDownloading = false;
         public async void UpdateDLL()
         {
-            isDownloading = true;
-            LanzouClient client = new LanzouClient(COOKIE);
-            var res = await client.LsDirAsync("2762979");
-            TextItem item = null;
-            foreach (var d in res.text)
+            try
             {
-                if (item == null || item.name.CompareTo(d.name) <= 0)
-                    item = d;
-            }
-            if (item == null)
-                return;
-            var _verdir = Settings.root.Combine(item.name);
-            if (!Directory.Exists(_verdir))
-                Directory.CreateDirectory(_verdir);
-            var res2 = await client.LsFilesAsync(item.fol_id);
-            foreach (var f in res2.text)
-            {
-                var _fpath = _verdir.Combine(f.name);
-                if (!File.Exists(_fpath))
+                isDownloading = true;
+                LanzouClient client = new LanzouClient(COOKIE);
+                var res = await client.LsDirAsync("2762979");
+                TextItem item = null;
+                foreach (var d in res.text)
                 {
-                    var share = await client.GetShareUrl(f.id);
-                    var url = await client.GetDurl(share.info.url);
-                    var down = await DownloadFile(url.url, _fpath);
+                    if (item == null || item.name.CompareTo(d.name) <= 0)
+                        item = d;
                 }
+                if (item == null)
+                    return;
+                var _verdir = Settings.root.Combine(item.name);
+                if (!Directory.Exists(_verdir))
+                    Directory.CreateDirectory(_verdir);
+                var res2 = await client.LsFilesAsync(item.fol_id);
+                foreach (var f in res2.text)
+                {
+                    var _fpath = _verdir.Combine(f.name);
+                    if (!File.Exists(_fpath))
+                    {
+                        var share = await client.GetShareUrl(f.id);
+                        var url = await client.GetDurl(share.info.url);
+                        var down = await DownloadFile(url.url, _fpath);
+                    }
+                }
+                isDownloading = false;
             }
-            isDownloading = false;
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "启动失败", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public float downloadProgress = 0;

@@ -43,69 +43,95 @@ namespace ssjj_main
 
         private void InitIni()
         {
-            var _rootdir = "ssjj_libs";
-            if (!Directory.Exists(_rootdir))
-                Directory.CreateDirectory(_rootdir);
-            if (!File.Exists(Settings.iniPath))
+            try
             {
-                File.Create(Settings.iniPath).Close();
-                Settings.Save();
-            }
-            else
-            {
-                Settings.Read();
-            }
+                var _rootdir = "ssjj_libs";
+                if (!Directory.Exists(_rootdir))
+                    Directory.CreateDirectory(_rootdir);
+                if (!File.Exists(Settings.iniPath))
+                {
+                    File.Create(Settings.iniPath).Close();
+                    Settings.Save();
+                }
+                else
+                {
+                    Settings.Read();
+                }
 
-            ViewUpdate();
+                ViewUpdate();
+            }
+            catch (Exception e)
+            {
+                MessageBoxShowException(e);
+            }
         }
 
         private void OnTimer(object sender, EventArgs e)
         {
-            if (lan.isDownloading)
+            try
             {
-                button.Content = $"更新中({(int)(progressBar.Value * 100)}%)...";
-                progressBar.Value += 0.0015f;
+                if (lan.isDownloading)
+                {
+                    button.Content = $"更新中({(int)(progressBar.Value * 100)}%)...";
+                    progressBar.Value += 0.0015f;
+                }
+                else
+                {
+                    button.Content = "启动";
+                    timer.Stop();
+                    button.IsEnabled = true;
+                    progressBar.Value = 1f;
+                    isReady = true;
+                    ViewUpdate();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                button.Content = "启动";
-                timer.Stop();
-                button.IsEnabled = true;
-                progressBar.Value = 1f;
-                isReady = true;
-                ViewUpdate();
+                MessageBoxShowException(ex);
             }
         }
 
         private void OnTimer2(object sender, EventArgs e)
         {
-            if (!isReady)
-                return;
-
-            // check settings
-            if (Settings.isEsp != (bool)esp.IsChecked
-                || Settings.isEspFriendly != (bool)esp_friendly.IsChecked
-                || Settings.isEspHp != (bool)esp_hp.IsChecked
-                || Settings.isEspBox != (bool)esp_box.IsChecked
-                || Settings.isEspBoneLine != (bool)esp_boneline.IsChecked
-                || Settings.isEspAirLine != (bool)esp_airline.IsChecked
-                || Settings.isAim != (bool)aim.IsChecked
-                || Settings.isAimCircle != (bool)aim_circle.IsChecked
-                || Settings.isAimLine != (bool)aim_line.IsChecked
-                || Settings.aimRange != (int)(aim_range.SelectedIndex)
-                || Settings.aimPos != (AimPos)aim_pos.SelectedIndex
-                || Settings.isNoRecoil != (bool)no_recoil.IsChecked
-                || Settings.isNoSpread != (bool)no_spread.IsChecked
-                || Settings.isWindowed != (bool)is_windowed.IsChecked)
+            try
             {
-                ViewToSettings();
-                ViewUpdate();
-                Settings.Save();
-                if (isStartup)
+                if (!isReady)
+                    return;
+
+                // check settings
+                if (Settings.isEsp != (bool)esp.IsChecked
+                    || Settings.isEspFriendly != (bool)esp_friendly.IsChecked
+                    || Settings.isEspHp != (bool)esp_hp.IsChecked
+                    || Settings.isEspBox != (bool)esp_box.IsChecked
+                    || Settings.isEspBoneLine != (bool)esp_boneline.IsChecked
+                    || Settings.isEspAirLine != (bool)esp_airline.IsChecked
+                    || Settings.isAim != (bool)aim.IsChecked
+                    || Settings.isAimCircle != (bool)aim_circle.IsChecked
+                    || Settings.isAimLine != (bool)aim_line.IsChecked
+                    || Settings.aimRange != (int)(aim_range.SelectedIndex)
+                    || Settings.aimPos != (AimPos)aim_pos.SelectedIndex
+                    || Settings.isNoRecoil != (bool)no_recoil.IsChecked
+                    || Settings.isNoSpread != (bool)no_spread.IsChecked
+                    || Settings.isWindowed != (bool)is_windowed.IsChecked)
                 {
-                    FixInis(FindRoot());
+                    ViewToSettings();
+                    ViewUpdate();
+                    Settings.Save();
+                    if (isStartup)
+                    {
+                        FixInis(FindRoot());
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBoxShowException(ex);
+            }
+        }
+
+        private void MessageBoxShowException(Exception ex)
+        {
+            MessageBox.Show(ex.Message + "\n" + ex.StackTrace, "启动失败", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private string rootPath = "";
@@ -297,25 +323,32 @@ namespace ssjj_main
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var root = FindRoot();
-            if (root == null)
+            try
             {
-                //启动失败
-                MessageBox.Show("请先启动生死狙击游戏。", "启动失败", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+                var root = FindRoot();
+                if (root == null)
+                {
+                    //启动失败
+                    MessageBox.Show("请先启动生死狙击游戏。", "启动失败", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
-            var error = FixBattles(root);
-            if (!string.IsNullOrEmpty(error))
+                var error = FixBattles(root);
+                if (!string.IsNullOrEmpty(error))
+                {
+                    //启动失败
+                    MessageBox.Show(error, "启动失败", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                button.Content = "启动成功";
+                button.IsEnabled = false;
+                isStartup = true;
+            }
+            catch (Exception ex)
             {
-                //启动失败
-                MessageBox.Show(error, "启动失败", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                MessageBoxShowException(ex);
             }
-
-            button.Content = "启动成功";
-            button.IsEnabled = false;
-            isStartup = true;
         }
 
         private void ViewUpdate()
