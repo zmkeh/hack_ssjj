@@ -186,6 +186,12 @@ namespace ssjj_main
 
         private string FixBattle(string path)
         {
+            var sdir = path.Combine("SSJJ_BattleClient_Unity_Data/StreamingAssets");
+            if (!Directory.Exists(sdir))
+            {
+                Directory.CreateDirectory(sdir);
+            }
+
             var dll = path.Combine("SSJJ_BattleClient_Unity_Data/Managed/Assembly-CSharp.dll");
             if (!File.Exists(dll))
             {
