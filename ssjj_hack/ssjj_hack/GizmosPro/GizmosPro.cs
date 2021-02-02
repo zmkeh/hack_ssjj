@@ -121,5 +121,10 @@ namespace ssjj_hack
                     graphList[i].Draw();
             }
         }
+
+        public static void OnGUI()
+        {
+            ins.CallOnGUI();
+        }
     }
 }

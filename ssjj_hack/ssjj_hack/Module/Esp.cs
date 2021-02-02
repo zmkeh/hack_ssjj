@@ -9,12 +9,6 @@ namespace ssjj_hack.Module
 
         public override void OnGUI()
         {
-            base.OnGUI();
-            GizmosPro.ins.CallOnGUI();
-        }
-
-        public override void Update()
-        {
             if (!Settings.isEsp)
                 return;
             base.Update();
@@ -36,14 +30,28 @@ namespace ssjj_hack.Module
                 if (!Settings.isEspFriendly && p.isFriend)
                     continue;
 
-                /*
-                foreach (var point in p.GetPoints())
-                {
-                    D_C(point, Color.black);
-                }
-                */
-
                 var color = p.isFriend ? Color.green : Color.red;
+
+                // NAME
+                var _name = p.root.name;
+                Color lastColor = GUI.color;
+                TextAnchor lastAnchor = GUI.skin.label.alignment;
+                GUI.contentColor = Color.black;
+                GUI.skin.label.alignment = TextAnchor.MiddleCenter;
+                var _rect = p.GetRect();
+                _rect.y = Screen.height - _rect.y;
+                var __rect = new Rect(_rect.center, _rect.size);
+                __rect.y -= __rect.height;
+                __rect.x = __rect.x - 100;
+                __rect.height = 20;
+                __rect.width = 200;
+                GUI.Label(__rect, _name);
+                __rect.x -= 1;
+                __rect.y -= 1;
+                GUI.contentColor = color;
+                GUI.Label(__rect, _name);
+                GUI.contentColor = lastColor;
+                GUI.skin.label.alignment = lastAnchor;
 
                 if (Settings.isEspBox)
                 {

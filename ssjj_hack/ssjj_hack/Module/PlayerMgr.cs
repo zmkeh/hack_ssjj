@@ -18,7 +18,6 @@ namespace ssjj_hack.Module
             var rootGo = GameObject.Find("thirdPersonResources");
             if (rootGo == null || Camera.main == null)
                 return;
-            var cam = Camera.main;
             var root = rootGo.transform;
 
             for (int i = 0; i < root.childCount; i++)
@@ -32,6 +31,12 @@ namespace ssjj_hack.Module
                     continue;
 
                 models.Add(new PlayerModel(c));
+            }
+
+            for (int i = models.Count - 1; i >= 0; i--)
+            {
+                if (!models[i].root || !models[i].root.gameObject.activeInHierarchy)
+                    models.RemoveAt(i);
             }
         }
     }

@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
@@ -57,8 +59,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\ReflectionExtension.cs" />
+    <Compile Include="FakeScripts\FakePunchSystem.cs" />
+    <Compile Include="FakeScripts\FakeUnityInput.cs" />
     <Compile Include="Ini.cs" />
+    <Compile Include="Watcher.cs" />
     <Compile Include="Module\Aim.cs" />
+    <Compile Include="Module\Chat.cs" />
+    <Compile Include="Module\Spread.cs" />
+    <Compile Include="Module\Punch.cs" />
+    <Compile Include="Module\Ping.cs" />
     <Compile Include="Module\Fun.cs" />
     <Compile Include="Module\SettingsModule.cs" />
     <Compile Include="Module\Viewer.cs" />
@@ -75,17 +84,20 @@
     <Compile Include="Log.cs" />
     <Compile Include="Loop.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Module\ModuleBase.cs" />
+    <Compile Include="Module\Base\ModuleBase.cs" />
     <Compile Include="Module\PlayerMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Tools\Hooker.cs" />
+    <Compile Include="Tools\MathTool.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetDir)$(ProjectName).dll" "D:\games\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetDir)$(ProjectName).dll" "D:\games\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"
+Copy "$(TargetDir)$(ProjectName).dll" "D:\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

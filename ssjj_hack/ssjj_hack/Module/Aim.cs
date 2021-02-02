@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Input;
+using UnityEngine;
 
 namespace ssjj_hack.Module
 {
@@ -8,7 +9,7 @@ namespace ssjj_hack.Module
 
         public override void Start()
         {
-            base.Start();
+            InputCollector.Instance.SetDeviceInput(new FakeUnityInput());
         }
 
         public override void Update()
@@ -86,40 +87,9 @@ namespace ssjj_hack.Module
                 if (Input.GetMouseButton(1))
                 {
                     var delta = minPoint - center;
-                    Sim.Move(delta);
+                    FakeUnityInput.forceAxis += delta * 0.2f;
                 }
             }
         }
-
-        void UpdateAccuracy()
-        {
-            /*
-            Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.AccuracyOffset = 0;
-            Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.DefaultAccuracy = 0;
-            Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.MaxInaccuracy = 100;
-            Contexts.sharedInstance.player.myPlayerEntity.currentWeapon.WeaponInfo.SpreadScaleY = 0;
-            */
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

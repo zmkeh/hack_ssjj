@@ -15,22 +15,35 @@ namespace ssjj_hack
                 if (_file == null)
                 {
                     var _date = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_ms");
-                    _file = Application.streamingAssetsPath + $"/log_{_date}.txt";
+                    _file = Application.streamingAssetsPath + $"/log.txt";
                 }
                 return _file;
             }
         }
 
-        public static void Init()
+        private static Queue<string> _lastLog = new Queue<string>();
+        public static void OnGUI()
         {
-            if (!File.Exists(file))
+            if (_lastLog.Count <= 0)
+                return;
+            if (GUI.Button(new Rect(720, 0, Screen.width - 720, 18), "Clear"))
             {
-                File.Create(file).Close();
+                _lastLog.Clear();
             }
+            var _logs = "";
+            var index = 0;
+            foreach (var _log in _lastLog)
+            {
+                _logs += $"{++index}) {_log}\n";
+            }
+            GUI.Box(new Rect(720, 20, Screen.width - 720, 150), _logs);
         }
 
         public static void Print(string msg)
         {
+            if (_lastLog.Count >= 5)
+                _lastLog.Dequeue();
+            _lastLog.Enqueue(msg);
             var _date = DateTime.Now.ToString("HH:mm:ss.ms");
             File.AppendAllText(file, $"[{_date}] {msg}\r\n");
         }

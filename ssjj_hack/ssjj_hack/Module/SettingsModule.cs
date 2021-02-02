@@ -49,7 +49,6 @@ namespace ssjj_hack.Module
             base.FixedUpdate();
             if (lastIniTicks != GetTicks())
             {
-                Log.Print("Ini Changed: ");
                 lastIniTicks = GetTicks();
                 Settings.Read();
             }

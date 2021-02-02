@@ -1,6 +1,7 @@
 ﻿using ssjj_hack.Module;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 namespace ssjj_hack
@@ -55,13 +56,34 @@ namespace ssjj_hack
             {
                 try
                 {
+                    BeginWatch(t.Key.Name + " OnGUI");
                     t.Value.OnGUI();
+                    EndWatch();
                 }
                 catch (Exception ex)
                 {
                     Log.Print(ex);
                 }
             }
+
+            Log.OnGUI();
+            // Watcher.OnGUI();
+            GizmosPro.OnGUI();
+        }
+
+        private Stopwatch watch = new Stopwatch();
+        private string _currentWatchName = "";
+        private void BeginWatch(string name)
+        {
+            _currentWatchName = name;
+            watch.Reset();
+            watch.Start();
+        }
+
+        private void EndWatch()
+        {
+            Watcher.Record($"{_currentWatchName}", watch.ElapsedTicks);
+            watch.Stop();
         }
 
         void Update()
@@ -70,7 +92,9 @@ namespace ssjj_hack
             {
                 try
                 {
+                    BeginWatch(t.Key.Name + " Update");
                     t.Value.Update();
+                    EndWatch();
                 }
                 catch (Exception ex)
                 {
@@ -85,7 +109,9 @@ namespace ssjj_hack
             {
                 try
                 {
+                    BeginWatch(t.Key.Name + " FixedUpdate");
                     t.Value.FixedUpdate();
+                    EndWatch();
                 }
                 catch (Exception ex)
                 {
@@ -100,7 +126,9 @@ namespace ssjj_hack
             {
                 try
                 {
+                    BeginWatch(t.Key.Name + " LateUpdate");
                     t.Value.LateUpdate();
+                    EndWatch();
                 }
                 catch (Exception ex)
                 {
@@ -148,11 +176,15 @@ namespace ssjj_hack
         public void InitPlugins()
         {
             AddPlugin<SettingsModule>();
-            AddPlugin<Viewer>();
+            // AddPlugin<Viewer>();
             AddPlugin<PlayerMgr>();
             AddPlugin<Esp>();
             AddPlugin<Aim>();
             AddPlugin<Fun>();
+            AddPlugin<Chat>();
+            // AddPlugin<Punch>();
+            // AddPlugin<Spread>();
+            AddPlugin<Module.Ping>();
         }
     }
 }
