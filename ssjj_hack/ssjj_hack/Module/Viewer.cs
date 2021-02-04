@@ -87,7 +87,6 @@ namespace ssjj_hack.Module
         public bool isProp => propertyInfo != null;
         public bool isPrim => type != null && TypePrim(type);
         public bool isValid => type != null && !isException;
-        public bool isModiable => isPrim && (isField || isProp) && parent != null;
         public bool isArrayItem => arrayIndex >= 0;
 
         public FieldInfo fieldInfo;

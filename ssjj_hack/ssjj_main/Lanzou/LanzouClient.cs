@@ -1,16 +1,13 @@
-﻿using Hzexe.Lanzou.Model.Lanzou;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Hzexe.Lanzou
+namespace Lanzou
 {
     public class LanzouClient
     {
@@ -30,24 +27,13 @@ namespace Hzexe.Lanzou
                 ck.Domain = ".woozooo.com";
                 cookieContainer.Add(ck);
             }
-#if NETCOREAPP3_0
-            handler = new SocketsHttpHandler()
-            {
-                AllowAutoRedirect = false,
-                CookieContainer = cookieContainer,
-                PooledConnectionLifetime = TimeSpan.FromHours(1),
-                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(20),
-                MaxConnectionsPerServer = 6,
-            };
-#else
             handler = new HttpClientHandler()
             {
                 AllowAutoRedirect = false,
                 CookieContainer = cookieContainer,
-                MaxConnectionsPerServer = 6,
             };
-#endif
         }
+
         public async Task<LanZouFileResult> FileUploadAsync(string folder_id, Stream file, string filename, int filesize)
         {
             HttpClient client = new HttpClient(handler, false);
@@ -81,7 +67,7 @@ namespace Hzexe.Lanzou
                 client.Dispose();
             }
 
-            var lanZouFileResult = JsonSerializer.Deserialize<LanZouFileResult>(json);
+            var lanZouFileResult = JsonUtility.FromJson<LanZouFileResult>(json);
             var file_id = lanZouFileResult.text[0].id;
             return lanZouFileResult;
         }
@@ -113,8 +99,7 @@ namespace Hzexe.Lanzou
                 client.Dispose();
             }
 
-            var lanZouFileResult = JsonSerializer.Deserialize<GetDirResponse>(json);
-            //var file_id = lanZouFileResult.text[0].id;
+            var lanZouFileResult = JsonUtility.FromJson<GetDirResponse>(json);
             return lanZouFileResult;
         }
 
@@ -146,8 +131,7 @@ namespace Hzexe.Lanzou
                 client.Dispose();
             }
 
-            var lanZouFileResult = JsonSerializer.Deserialize<GetFilesResponse>(json);
-            //var file_id = lanZouFileResult.text[0].id;
+            var lanZouFileResult = JsonUtility.FromJson<GetFilesResponse>(json);
             return lanZouFileResult;
         }
 
@@ -179,11 +163,11 @@ namespace Hzexe.Lanzou
                 client.Dispose();
             }
 
-            var obj = JsonSerializer.Deserialize<MkdirResponse>(json);
+            var obj = JsonUtility.FromJson<MkdirResponse>(json);
             return obj;
         }
 
-        public async Task<string> GetDurl(string url)
+        public async Task<GetDurlResponse> GetDurl(string url)
         {
             HttpClient client = new HttpClient(handler, false);
             client.DefaultRequestHeaders.Add("user-agent", userAgent);
@@ -199,11 +183,7 @@ namespace Hzexe.Lanzou
             res = await client.GetAsync(frame);
             res.EnsureSuccessStatusCode();
             html = await res.Content.ReadAsStringAsync();
-            var sign = Regex.Match(html, @"'sign':(.+?),").Groups[1].Value;
-            if (sign.Length < 20)
-            {
-                sign = Regex.Match(html, $"var ajaxdata\\s*=\\s*'(.+?)';").Groups[1].Value;
-            }
+            var sign = Regex.Match(html, @"'signs':ajaxdata,'sign':(.+?),").Groups[1].Value;
             Dictionary<string, string> ps = new Dictionary<string, string>(5)
             {
                 { "action", "downprocess"},
@@ -216,7 +196,7 @@ namespace Hzexe.Lanzou
             res = await client.PostAsync(linkUrl, encodedContent);
             res.EnsureSuccessStatusCode();
             html = await res.Content.ReadAsStringAsync();
-            var linkinfo = JsonSerializer.Deserialize<GetLinkResponse>(html);
+            var linkinfo = JsonUtility.FromJson<GetLinkResponse>(html);
             var fake_url = linkinfo.FullUrl;
             res = await client.GetAsync(fake_url);
             res.EnsureSuccessStatusCode();
@@ -239,16 +219,16 @@ namespace Hzexe.Lanzou
                 res = await client.PostAsync(check_api, encodedContent);
                 res.EnsureSuccessStatusCode();
                 var resJson = await res.Content.ReadAsStringAsync();
-                var jd = JsonDocument.Parse(resJson);
-                var aurl = jd.RootElement.GetProperty("url").GetString();
+                var durl = JsonUtility.FromJson<GetDurlResponse>(resJson);
                 client.Dispose();
-                return aurl;
+                return durl;
             }
             else
             {
                 client.Dispose();
                 //重定向后的真直链
-                return res.Content.Headers.ContentLocation.ToString();
+                var _durl = res.Content.Headers.ContentLocation.ToString();
+                return new GetDurlResponse() { zt = 1, url = _durl };
             }
         }
 
@@ -277,7 +257,7 @@ namespace Hzexe.Lanzou
             {
                 client.Dispose();
             }
-            var obj = JsonSerializer.Deserialize<ShareInfoResponse>(json);
+            var obj = JsonUtility.FromJson<ShareInfoResponse>(json);
             return obj;
         }
 

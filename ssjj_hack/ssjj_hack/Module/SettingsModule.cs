@@ -11,7 +11,8 @@ namespace ssjj_hack.Module
             {
                 if (!Screen.fullScreen)
                 {
-                    Screen.fullScreen = true;
+                    var index = Screen.resolutions.Length - 1;
+                    Screen.SetResolution(Screen.resolutions[index].width, Screen.resolutions[index].height, true);
                 }
             }
             else
