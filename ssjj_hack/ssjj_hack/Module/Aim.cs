@@ -21,9 +21,11 @@ namespace ssjj_hack.Module
         }
 
         // logic
+        private float dragDelay = 0;
+        private float fireKeep = 0;
         void UpdateAim()
         {
-            var minPoint = Vector2.zero;
+            var targetPoint = Vector2.zero;
             var minDist = float.MaxValue;
             var center = new Vector2(Screen.width, Screen.height) * 0.5f;
             foreach (var p in playerMgr.models)
@@ -64,7 +66,7 @@ namespace ssjj_hack.Module
                 if (dist < minDist)
                 {
                     minDist = dist;
-                    minPoint = point;
+                    targetPoint = point;
                 }
             }
 
@@ -80,13 +82,33 @@ namespace ssjj_hack.Module
             {
                 if (Settings.isAimLine)
                 {
-                    var l = new TLine(minPoint, center);
+                    var l = new TLine(targetPoint, center);
                     GizmosPro.DrawLine(l.from, l.to, Color.gray);
                 }
 
-                if (Input.GetMouseButton(1))
+                var delta = targetPoint - center;
+                dragDelay = Mathf.Max(0, dragDelay - Time.deltaTime);
+                fireKeep = Mathf.Max(0, fireKeep - Time.deltaTime);
+                var isMove = false;
+
+                if (Input.GetMouseButton(0))
                 {
-                    var delta = minPoint - center;
+                    fireKeep = 0.02f;
+                }
+
+                if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
+                {
+                    dragDelay = 0.02f;
+                }
+
+                if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+                {
+                    isMove = true;
+                }
+
+                if (Input.GetKey(KeyCode.LeftShift) || fireKeep > 0 
+                    || !isMove && dragDelay <= 0)
+                {
                     FakeUnityInput.forceAxis += delta * 0.2f;
                 }
             }

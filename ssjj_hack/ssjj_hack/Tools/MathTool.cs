@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace ssjj_hack
 {
@@ -25,6 +26,13 @@ namespace ssjj_hack
             var fov = Contexts.sharedInstance.player.cameraOwnerEntity.fov.Fov;
             var x = angle / (-2f * (0.01f + 0.001f * sen) * (fov / 90f));
             return x;
+        }
+
+        public static float SignedAngle(Vector2 v1, Vector2 v2)
+        {
+            float angle = Vector3.Angle(v1, v2);
+            angle *= Mathf.Sign(Vector3.Cross(v1, v2).y);
+            return angle;
         }
     }
 }
