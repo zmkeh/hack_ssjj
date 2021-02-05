@@ -53,6 +53,7 @@
     <Compile Include="GUI\GUIPro.cs" />
     <Compile Include="GUI\Window.cs" />
     <Compile Include="Ini.cs" />
+    <Compile Include="Module\Inspector.cs" />
     <Compile Include="Module\Hierarchy.cs" />
     <Compile Include="Tools\Sim.cs" />
     <Compile Include="Watcher.cs" />

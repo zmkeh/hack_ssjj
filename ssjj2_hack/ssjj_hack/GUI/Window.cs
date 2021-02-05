@@ -25,7 +25,13 @@ namespace ssjj_hack
         public void CallOnGUI()
         {
             rect = GUI.Window(id, rect, WindowFunc, name);
+            if (rect.x < 1) rect.x = 1;
+            if (rect.y < 1) rect.y = 1;
+            if (rect.x > Screen.width - rect.width - 1) rect.x = Screen.width - rect.width - 1;
+            if (rect.y > Screen.height - rect.height - 1) rect.y = Screen.height - rect.height - 1;
         }
+
+        //TODO: resize
 
         private void WindowFunc(int id)
         {

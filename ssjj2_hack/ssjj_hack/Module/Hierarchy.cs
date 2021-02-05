@@ -6,22 +6,22 @@ namespace ssjj_hack
     public class Hierarchy : ModuleBase
     {
         List<Item> rootItems = new List<Item>();
-        Window hierarchyWind = null;
-        Vector2 hierarchyScroll;
+        Window window = null;
+        Vector2 scroll;
 
         public override void Awake()
         {
             base.Awake();
-            hierarchyWind = new Window("层级结构", new Vector2(Screen.width * 0.3f, 10), new Vector2(500, 700), OnHierarchyGUI);
+            window = new Window("层级结构", new Vector2(Screen.width * 0.1f, 10), new Vector2(500, 700), OnWindowGUI);
         }
 
         public override void OnGUI()
         {
             base.OnGUI();
-            hierarchyWind?.CallOnGUI();
+            window?.CallOnGUI();
         }
 
-        private void OnHierarchyGUI()
+        private void OnWindowGUI()
         {
             if (GUILayout.Button("获取根节点", GUILayout.Width(80)))
             {
@@ -35,7 +35,7 @@ namespace ssjj_hack
                 }
             }
 
-            hierarchyScroll = GUILayout.BeginScrollView(hierarchyScroll, false, false, GUIStyle.none, GUI.skin.verticalScrollbar);
+            scroll = GUILayout.BeginScrollView(scroll, false, false, GUIStyle.none, GUI.skin.verticalScrollbar);
             foreach (var item in rootItems)
             {
                 item.DrawUI();
@@ -88,6 +88,7 @@ namespace ssjj_hack
                 if (GUILayout.Button(name, style))
                 {
                     selectedItem = this;
+                    Inspector.SetObject(this.transform.gameObject);
                 }
                 GUILayout.EndHorizontal();
 

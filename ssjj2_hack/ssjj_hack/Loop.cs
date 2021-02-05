@@ -1,5 +1,4 @@
-﻿using ssjj_hack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
@@ -174,6 +173,7 @@ namespace ssjj_hack
             AddPlugin<SettingsModule>();
             AddPlugin<Viewer>();
             AddPlugin<Hierarchy>();
+            AddPlugin<Inspector>();
             // AddPlugin<PlayerMgr>();
             // AddPlugin<Esp>();
             // AddPlugin<Aim>();
