@@ -98,6 +98,7 @@ namespace ssjj_hack
                 GUIPro.BeginIndent(indent);
                 GUIPro.Label(" " + name + " -> Exception: " + exMsg);
                 GUIPro.EndIndent();
+                GUI.contentColor = contentColor;
                 return;
             }
 
@@ -107,6 +108,7 @@ namespace ssjj_hack
                 GUIPro.BeginIndent(indent);
                 GUIPro.Label(" " + name + " -> not valid");
                 GUIPro.EndIndent();
+                GUI.contentColor = contentColor;
                 return;
             }
 
@@ -176,6 +178,7 @@ namespace ssjj_hack
                     GUIPro.Text(name, value.ToString());
                 }
                 GUIPro.EndIndent();
+                GUI.contentColor = contentColor;
             }
             else
             {
@@ -183,6 +186,7 @@ namespace ssjj_hack
                 GUIPro.BeginIndent(indent);
                 isFoldout = GUIPro.Foldout(name, isFoldout);
                 GUIPro.EndIndent();
+                GUI.contentColor = contentColor;
 
                 if (isFoldout)
                 {
@@ -198,8 +202,6 @@ namespace ssjj_hack
                     children = null;
                 }
             }
-
-            GUI.contentColor = contentColor;
         }
 
         public ObjectViewer(object obj)

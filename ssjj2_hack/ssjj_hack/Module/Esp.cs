@@ -22,41 +22,37 @@ namespace ssjj_hack
                 var model = player.model;
                 if (!player.isValid)
                     continue;
-                if (player.isMainPlayer)
-                    continue;
+                // if (player.isMainPlayer)
+                //     continue;
                 if (!Settings.isEspFriendly && player.isFriend)
-                    continue;
-                if (!model.isCached)
                     continue;
                 if (!model.root.gameObject.activeInHierarchy)
                     continue;
 
+                var rect = model.GetRect();
                 var color = player.isFriend ? Color.green : Color.red;
 
                 // NAME
-                var _name = model.root.name;
-                Color lastColor = GUI.color;
-                TextAnchor lastAnchor = GUI.skin.label.alignment;
+                var tempRect = rect;
+                tempRect.y = Screen.height - tempRect.y;
+                var nameRect = new Rect(tempRect.center, tempRect.size);
+                nameRect.y -= nameRect.height * 0.5f + 30;
+                nameRect.x = nameRect.x - 100;
+                nameRect.height = 20;
+                nameRect.width = 200;
+                Color contentColor = GUI.contentColor;
+                TextAnchor labelAlignment = GUI.skin.label.alignment;
                 GUI.contentColor = Color.black;
                 GUI.skin.label.alignment = TextAnchor.MiddleCenter;
-                var _rect = model.GetRect();
-                _rect.y = Screen.height - _rect.y;
-                var __rect = new Rect(_rect.center, _rect.size);
-                __rect.y -= __rect.height;
-                __rect.x = __rect.x - 100;
-                __rect.height = 20;
-                __rect.width = 200;
-                GUI.Label(__rect, _name);
-                __rect.x -= 1;
-                __rect.y -= 1;
+                GUI.Label(nameRect, player.name);
+                nameRect.position -= Vector2.one;
                 GUI.contentColor = color;
-                GUI.Label(__rect, _name);
-                GUI.contentColor = lastColor;
-                GUI.skin.label.alignment = lastAnchor;
+                GUI.Label(nameRect, player.name);
+                GUI.contentColor = contentColor;
+                GUI.skin.label.alignment = labelAlignment;
 
                 if (Settings.isEspBox)
                 {
-                    var rect = model.GetRect();
                     if (rect.height != 0)
                     {
                         D_R(model.GetRect(), color);
@@ -73,7 +69,6 @@ namespace ssjj_hack
 
                 if (Settings.isEspAirLine)
                 {
-                    var rect = model.GetRect();
                     if (rect.height != 0)
                     {
                         var boxTopCenter = new Vector2(rect.x, rect.top);
@@ -84,7 +79,6 @@ namespace ssjj_hack
 
                 if (Settings.isEspHp)
                 {
-                    var rect = model.GetRect();
                     if (rect.height != 0)
                     {
                         var x = rect.right + 4;

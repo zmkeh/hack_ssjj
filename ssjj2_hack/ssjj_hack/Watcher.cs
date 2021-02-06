@@ -13,7 +13,7 @@ namespace ssjj_hack
         {
             if (records.Count <= 0)
                 return;
-            Color lastColor = GUI.color;
+            Color lastColor = GUI.contentColor;
             GUI.contentColor = Color.green;
             if (GUILayout.Button("Clear", GUILayout.Width(500)))
             {

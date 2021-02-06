@@ -19,35 +19,17 @@ namespace ssjj_hack
             return comp;
         }
 
-
-        /*
-        public static void SetAlpha(this Graphic gra, float alpha)
-        {
-            var c = gra.color;
-            c.a = alpha;
-            gra.color = c;
-        }
-
-        public static void SetSprite(this Image gra, string name)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                gra.sprite = null;
-                return;
-            }
-            //var sprite = ResUtil.Load<Sprite>(name);
-            //gra.sprite = sprite;
-        }*/
-
         //Breadth-first search
-        public static Transform FindChildDeep(this Transform aParent, string aName)
+        public static Transform FindChildDeep(this Transform transform, string name)
         {
-            var result = aParent.Find(aName);
+            if (transform == null)
+                return null;
+            var result = transform.Find(name);
             if (result != null)
                 return result;
-            foreach (Transform child in aParent)
+            foreach (Transform child in transform)
             {
-                result = child.FindChildDeep(aName);
+                result = child.FindChildDeep(name);
                 if (result != null)
                     return result;
             }

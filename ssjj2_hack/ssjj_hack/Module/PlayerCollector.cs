@@ -1,7 +1,4 @@
-﻿using Entitas;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -11,8 +8,6 @@ namespace ssjj_hack
     {
         public override void OnGUI()
         {
-            GUILayout.Label("");
-
             if (GUILayout.Button("Collect"))
             {
                 Collect();
@@ -39,7 +34,25 @@ namespace ssjj_hack
             for (int i = players.Count - 1; i >= 0; i--)
             {
                 if (!players[i].isValid)
+                {
                     players.RemoveAt(i);
+                }
+            }
+
+            foreach (var p in players)
+            {
+                p.Update();
+            }
+        }
+
+        private float interval = 1;
+        public override void FixedUpdate()
+        {
+            interval = Mathf.Max(interval - Time.deltaTime, 0);
+            if (interval <= 0)
+            {
+                interval = 1;
+                Collect();
             }
         }
 
@@ -55,26 +68,26 @@ namespace ssjj_hack
         public string name;
         public long teamId;
 
-        public PlayerModel model;
+        public PlayerModel model = new PlayerModel();
         public float hp;
         public float hpMax;
 
         public bool isMainPlayer => this == mainPlayer;
         public bool isFriend => mainPlayer != null && mainPlayer.teamId == teamId;
-        public bool isValid => gameObject != null;
+        public bool isValid => gameObject != null && model.isValid;
         public float hpRatio => hpMax == 0 ? 0 : hp / hpMax;
 
         private Component script;
         private Component vehicle;
         private Component raycast;
-        private Entity entity;
-        private IComponent info;
+        private object entity;
+        private object info;
 
         public Player(GameObject gameObject)
         {
             this.gameObject = gameObject;
             Init();
-            Reset();
+            Update();
         }
 
         private void Init()
@@ -94,24 +107,24 @@ namespace ssjj_hack
             {
                 mainPlayer = this;
             }
-
-            entity = vehicle.ReflectMember("_playerEntity") as Entity;
-            info = entity.ReflectMember("playerInfo") as IComponent;
-            name = info.ReflectMember("_PlayerName").ReflectMember("m_InnerString") as string;
-            teamId = (long)info.ReflectMember("TeamId");
-            modelRoot = gameObject.transform.Find("ModelOffset/model");
-            model = new PlayerModel(modelRoot);
         }
 
-        public void Reset()
+        public void Update()
         {
-            model.CacheBones();
+            entity = vehicle.ReflectMember("_playerEntity");
+            info = entity.ReflectMember("playerInfo");
+            modelRoot = gameObject.transform.FindChildDeep("Bip01").parent;
+            model.CacheBones(modelRoot);
+            name = info.ReflectMember("_PlayerName").ReflectMember("m_InnerString") as string;
+            teamId = (long)info.ReflectMember("TeamId");
         }
     }
 
 
     public class PlayerModel
     {
+        public Transform root;
+
         public Transform spine;
         public Transform neck;
         public Transform u_head;
@@ -134,40 +147,33 @@ namespace ssjj_hack
         public Transform l_foot;
         public Transform r_foot;
 
-        public Transform root;
+        public bool isValid => isBonesCached && root != null;
+        public bool isBonesCached;
 
-        public bool isCached;
-
-        public PlayerModel(Transform root)
+        public void CacheBones(Transform root)
         {
             this.root = root;
-            CacheBones();
-        }
+            spine = root.FindChildDeep("Bip01 Spine");
+            neck = root.FindChildDeep("Bip01 Neck");
+            d_head = root.FindChildDeep("Bip01 Head");
+            u_head = d_head.FindChildDeep("Bip01 HeadNub");
 
-        public void CacheBones()
-        {
-            var c = root;
-            spine = c.FindChildDeep("Bip01 Spine");
-            neck = c.FindChildDeep("Bip01 Neck");
-            d_head = c.FindChildDeep("Bip01 Head");
-            u_head = d_head.FindChildDeep("Bip01 HeadNub") ?? d_head.FindChildDeep("Bone01");
+            l_clavicle = root.FindChildDeep("Bip01 L Clavicle");
+            r_clavicle = root.FindChildDeep("Bip01 R Clavicle");
+            l_upperarm = root.FindChildDeep("Bip01 L UpperArm");
+            r_upperarm = root.FindChildDeep("Bip01 R UpperArm");
+            l_forearm = root.FindChildDeep("Bip01 L Forearm");
+            r_forearm = root.FindChildDeep("Bip01 R Forearm");
+            l_hand = root.FindChildDeep("Bip01 L Hand");
+            r_hand = root.FindChildDeep("Bip01 R Hand");
 
-            l_clavicle = c.FindChildDeep("Bip01 L Clavicle");
-            r_clavicle = c.FindChildDeep("Bip01 R Clavicle");
-            l_upperarm = c.FindChildDeep("Bip01 L UpperArm");
-            r_upperarm = c.FindChildDeep("Bip01 R UpperArm");
-            l_forearm = c.FindChildDeep("Bip01 L Forearm");
-            r_forearm = c.FindChildDeep("Bip01 R Forearm");
-            l_hand = c.FindChildDeep("Bip01 L Hand");
-            r_hand = c.FindChildDeep("Bip01 R Hand");
-
-            pelvis = c.FindChildDeep("Bip01 Pelvis");
-            l_thigh = c.FindChildDeep("Bip01 L Thigh");
-            r_thigh = c.FindChildDeep("Bip01 R Thigh");
-            l_calf = c.FindChildDeep("Bip01 L Calf");
-            r_calf = c.FindChildDeep("Bip01 R Calf");
-            l_foot = c.FindChildDeep("Bip01 L Foot");
-            r_foot = c.FindChildDeep("Bip01 R Foot");
+            pelvis = root.FindChildDeep("Bip01 Pelvis");
+            l_thigh = root.FindChildDeep("Bip01 L Thigh");
+            r_thigh = root.FindChildDeep("Bip01 R Thigh");
+            l_calf = root.FindChildDeep("Bip01 L Calf");
+            r_calf = root.FindChildDeep("Bip01 R Calf");
+            l_foot = root.FindChildDeep("Bip01 L Foot");
+            r_foot = root.FindChildDeep("Bip01 R Foot");
 
             if (spine == null || neck == null
                 || d_head == null || u_head == null
@@ -180,15 +186,14 @@ namespace ssjj_hack
                 || l_calf == null || r_calf == null
                 || l_foot == null || r_foot == null)
             {
-                Log.Print("Cached Faild");
-                isCached = false;
+                isBonesCached = false;
             }
-            Log.Print("Cached");
-            isCached = true;
+            isBonesCached = true;
         }
 
         public TRect GetRect()
         {
+            if (!isValid) return default;
             var p1 = root.GetUIPos();
             var p2 = u_head.GetUIPos();
             if (p1.z <= 0 || p2.z <= 0)
@@ -211,6 +216,7 @@ namespace ssjj_hack
         public List<TCircle> GetPoints()
         {
             var points = new List<TCircle>();
+            if (!isValid) return points;
             AddPoint(points, spine);
             AddPoint(points, neck);
             AddPoint(points, d_head);
@@ -245,6 +251,7 @@ namespace ssjj_hack
         public List<TLine> GetLines()
         {
             var lines = new List<TLine>();
+            if (!isValid) return lines;
             AddLine(lines, pelvis, spine);
             AddLine(lines, spine, neck);
             AddLine(lines, neck, l_clavicle);

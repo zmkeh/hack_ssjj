@@ -173,18 +173,15 @@ namespace ssjj_hack
             AddPlugin<SettingsModule>();
             AddPlugin<GizmosPro>();
             AddPlugin<PlayerCollector>();
-            AddPlugin<Viewer>();
             AddPlugin<Hierarchy>();
             AddPlugin<Inspector>();
             AddPlugin<Esp>();
-            // AddPlugin<PlayerMgr>();
             // AddPlugin<Aim>();
             AddPlugin<Fun>();
             AddPlugin<Log>();
             // AddPlugin<Chat>();
             // AddPlugin<Punch>();
             // AddPlugin<Spread>();
-            // AddPlugin<Module.Ping>();
         }
     }
 }

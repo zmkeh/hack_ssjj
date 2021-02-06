@@ -33,10 +33,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Entitas, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\games\SSJJ2-WD\battle\21\hallclient_Data\Managed\Entitas.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -62,7 +58,6 @@
     <Compile Include="Watcher.cs" />
     <Compile Include="Module\Fun.cs" />
     <Compile Include="Module\SettingsModule.cs" />
-    <Compile Include="Module\Viewer.cs" />
     <Compile Include="Extensions\BaseExtension.cs" />
     <Compile Include="Extensions\CollectionExtension.cs" />
     <Compile Include="Extensions\UnityExtension.cs" />

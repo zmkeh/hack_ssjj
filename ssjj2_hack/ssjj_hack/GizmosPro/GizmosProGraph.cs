@@ -92,6 +92,7 @@ namespace ssjj_hack
         {
             if (s_material == null)
                 s_material = new Material(Shader.Find("Hidden/Internal-Colored"));
+            GL.PushMatrix();
             s_material.SetPass(0);
             GL.LoadOrtho();
             GL.Begin(GL.LINES);
@@ -101,6 +102,7 @@ namespace ssjj_hack
         void End()
         {
             GL.End();
+            GL.PopMatrix();
         }
 
         public void DrawScreenLine(Vector2[] points, Color color)
@@ -116,6 +118,7 @@ namespace ssjj_hack
         public void DrawScreenRect(TRect rect, Color color)
         {
             Begin(color);
+            
             GL.Vertex3(rect.left / Screen.width, rect.top / Screen.height, 0);
             GL.Vertex3(rect.left / Screen.width, rect.bottom / Screen.height, 0);
 

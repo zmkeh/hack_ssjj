@@ -19,6 +19,7 @@ namespace ssjj_hack
 
         private static Queue<string> cachedLogs = new Queue<string>();
         private static int selectedLogIndex = -1;
+        private static string selectedLog = "";
         private static Vector2 scroll;
 
         private static void OnWindowGUI()
@@ -33,13 +34,13 @@ namespace ssjj_hack
             {
                 cachedLogs.Clear();
                 selectedLogIndex = -1;
+                selectedLog = "";
             }
             GUI.skin.button.alignment = btnAlign;
 
             var boxAlign = GUI.skin.box.alignment;
             GUI.skin.box.alignment = TextAnchor.MiddleLeft;
             var index = 0;
-            var selectedLog = "";
             scroll = GUILayout.BeginScrollView(scroll, false, false, GUIStyle.none, GUI.skin.verticalScrollbar);
             foreach (var _log in cachedLogs)
             {

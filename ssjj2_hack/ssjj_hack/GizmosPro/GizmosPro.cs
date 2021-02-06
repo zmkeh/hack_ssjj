@@ -118,7 +118,9 @@ namespace ssjj_hack
             for (int i = 0; i < graphList.Count; ++i)
             {
                 if (graphList[i].isShow)
+                {
                     graphList[i].Draw();
+                }
             }
         }
 
