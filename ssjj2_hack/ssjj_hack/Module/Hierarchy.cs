@@ -12,7 +12,8 @@ namespace ssjj_hack
         public override void Awake()
         {
             base.Awake();
-            window = new Window("层级结构", new Vector2(Screen.width * 0.1f, 10), new Vector2(500, 700), OnWindowGUI);
+            window = new Window("层级结构", new Vector2(80, 10), new Vector2(400, 700), OnWindowGUI);
+            window.isMinimize = true;
         }
 
         public override void OnGUI()
@@ -23,7 +24,8 @@ namespace ssjj_hack
 
         private void OnWindowGUI()
         {
-            if (GUILayout.Button("获取根节点", GUILayout.Width(80)))
+            GUI.contentColor = Color.green;
+            if (GUILayout.Button("重新获取", GUILayout.Width(80)))
             {
                 rootItems.Clear();
                 foreach (Transform t in UnityEngine.Object.FindObjectsOfType<Transform>())
@@ -88,7 +90,7 @@ namespace ssjj_hack
                 if (GUILayout.Button(name, style))
                 {
                     selectedItem = this;
-                    Inspector.SetObject(this.transform.gameObject);
+                    Inspector.SetGameObject(this.transform.gameObject);
                 }
                 GUILayout.EndHorizontal();
 

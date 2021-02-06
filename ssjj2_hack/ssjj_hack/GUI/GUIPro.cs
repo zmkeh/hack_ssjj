@@ -6,10 +6,20 @@ namespace ssjj_hack
 {
     public class GUIPro
     {
-        public static bool Foldout(string name, bool isFoldout)
+        public static void BeginIndent(int indent)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("", GUILayout.Width(indentLevel * 16));
+            GUILayout.Label("", GUILayout.Width(indent * 16));
+        }
+
+        public static void EndIndent()
+        {
+            GUILayout.EndHorizontal();
+        }
+
+        public static bool Foldout(string name, bool isFoldout, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
             if (GUILayout.Button((isFoldout ? "▼" : "▶"), GUI.skin.label, GUILayout.Width(14)))
             {
                 isFoldout = !isFoldout;
@@ -39,7 +49,7 @@ namespace ssjj_hack
             return float.Parse(GUILayout.TextField(value.ToString(), options));
         }
 
-        public static int Int(long value, params GUILayoutOption[] options)
+        public static int Int(int value, params GUILayoutOption[] options)
         {
             return int.Parse(GUILayout.TextField(value.ToString(), options));
         }
@@ -58,7 +68,7 @@ namespace ssjj_hack
             return result;
         }
 
-        public static int Int(string name, float value, params GUILayoutOption[] options)
+        public static int Int(string name, int value, params GUILayoutOption[] options)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(name);
@@ -67,6 +77,54 @@ namespace ssjj_hack
             return result;
         }
 
+        public static long Long(string name, long value, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name);
+            var result = long.Parse(GUILayout.TextField(value.ToString(), options));
+            GUILayout.EndHorizontal();
+            return result;
+        }
+
+        public static bool Toggle(string name, bool value, params GUILayoutOption[] options)
+        {
+            var result = GUILayout.Toggle(value, name, options);
+            return result;
+        }
+
+        public static string Text(string name, string value, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name);
+            var result = GUILayout.TextField(value, options);
+            GUILayout.EndHorizontal();
+            return result;
+        }
+
+        public static Vector2 Vector2(string name, Vector2 value, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name);
+            var x = Float(value.x, options);
+            var y = Float(value.y, options);
+            var result = new Vector2(x, y);
+            GUILayout.EndHorizontal();
+            return result;
+        }
+
+        public static Vector3 Vector3(string name, Vector3 value, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name);
+            var x = Float(value.x, options);
+            var y = Float(value.y, options);
+            var z = Float(value.z, options);
+            var result = new Vector3(x, y, z);
+            GUILayout.EndHorizontal();
+            return result;
+        }
+
+        /*
         private static Dictionary<string, bool> foldOutObj = new Dictionary<string, bool>();
         private static object ListField(string title, object obj, Type objType, string path = "",
             Func<Type, bool> specialFilter = null, Func<string, object, Type, string, object> specialHandle = null)
@@ -295,5 +353,6 @@ namespace ssjj_hack
             val.z = Float(val.z, GUILayout.Width(tw));
             return val;
         }
+        */
     }
 }

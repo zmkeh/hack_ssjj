@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace ssjj_hack
@@ -40,6 +41,21 @@ namespace ssjj_hack
         public virtual void OnDestroy()
         {
 
+        }
+
+        protected static Type GetTypeMain(string fullname)
+        {
+            return GetAssembly("Assembly-CSharp").GetType(fullname);
+        }
+
+        protected static Assembly GetAssembly(string name)
+        {
+            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (name == asm.FullName.Substring(0, asm.FullName.IndexOf(",")))
+                    return asm;
+            }
+            return null;
         }
     }
 }

@@ -171,11 +171,13 @@ namespace ssjj_hack
         public void InitPlugins()
         {
             AddPlugin<SettingsModule>();
+            AddPlugin<GizmosPro>();
+            AddPlugin<PlayerCollector>();
             AddPlugin<Viewer>();
             AddPlugin<Hierarchy>();
             AddPlugin<Inspector>();
+            AddPlugin<Esp>();
             // AddPlugin<PlayerMgr>();
-            // AddPlugin<Esp>();
             // AddPlugin<Aim>();
             AddPlugin<Fun>();
             AddPlugin<Log>();

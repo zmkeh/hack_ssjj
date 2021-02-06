@@ -5,30 +5,42 @@ namespace ssjj_hack
 {
     public class Inspector : ModuleBase
     {
-        List<Item> items = new List<Item>();
+        List<ObjectViewer> items = new List<ObjectViewer>();
         Window window = null;
         Vector2 scroll;
-        GameObject gameObject;
 
         public override void Awake()
         {
             base.Awake();
-            window = new Window("检视面板", new Vector2(Screen.width * 0.5f, 10), new Vector2(500, 700), OnWindowGUI);
+            window = new Window("检视面板", new Vector2(480, 10), new Vector2(400, 700), OnWindowGUI);
+            window.isMinimize = true;
         }
 
-        public static void SetObject(GameObject go)
+        public static void SetGameObject(GameObject go)
         {
-            Loop.GetPlugin<Inspector>()?.SetObjet(go);
+            Loop.GetPlugin<Inspector>()?._SetGameObject(go);
         }
 
-        protected void SetObjet(GameObject go)
+        public static void SetObject(object obj)
         {
-            this.gameObject = go;
+            Loop.GetPlugin<Inspector>()?._SetObject(obj);
+        }
+
+        private void _SetGameObject(GameObject go)
+        {
             items.Clear();
+            if (go == null) return;
             foreach (var comp in go.GetComponents<Component>())
             {
-                items.Add(new Item(comp));
+                items.Add(new ObjectViewer(comp));
             }
+        }
+
+        private void _SetObject(object obj)
+        {
+            if (obj == null) return;
+            items.Clear();
+            items.Add(new ObjectViewer(obj));
         }
 
         public override void OnGUI()
@@ -42,39 +54,9 @@ namespace ssjj_hack
             scroll = GUILayout.BeginScrollView(scroll, false, false, GUIStyle.none, GUI.skin.verticalScrollbar);
             foreach (var item in items)
             {
-                item.DrawUI();
+                item.DrawGUI();
             }
             GUILayout.EndScrollView();
-        }
-
-        public class Item
-        {
-            public Component component;
-            public string name;
-            public List<Item> items;
-
-            public bool isValid => component != null;
-
-            public Item(Component component)
-            {
-                this.component = component;
-                this.name = component.GetType().Name;
-            }
-
-            public void DrawUI()
-            {
-                if (!isValid)
-                {
-                    GUILayout.BeginHorizontal();
-                    GUI.contentColor = Color.red;
-                    GUILayout.Button(name + "(deleted)", GUI.skin.label);
-                    GUILayout.EndHorizontal();
-                    return;
-                }
-
-                GUI.contentColor = Color.white;
-                GUIPro.ObjectField(name, component, component.GetType());
-            }
         }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ssjj_hack
 {
-    public class GizmosPro
+    public class GizmosPro : ModuleBase
     {
         private List<GizmosProGraph> graphList = new List<GizmosProGraph>();
         private const int MAX_GRAPH_COUNT = 1000;
@@ -122,7 +122,7 @@ namespace ssjj_hack
             }
         }
 
-        public static void OnGUI()
+        public override void OnGUI()
         {
             ins.CallOnGUI();
         }

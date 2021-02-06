@@ -51,10 +51,13 @@
   <ItemGroup>
     <Compile Include="Extensions\ReflectionExtension.cs" />
     <Compile Include="GUI\GUIPro.cs" />
+    <Compile Include="GUI\ObjectViewer.cs" />
     <Compile Include="GUI\Window.cs" />
     <Compile Include="Ini.cs" />
-    <Compile Include="Module\Inspector.cs" />
+    <Compile Include="Module\Esp.cs" />
+    <Compile Include="Module\PlayerCollector.cs" />
     <Compile Include="Module\Hierarchy.cs" />
+    <Compile Include="Module\Inspector.cs" />
     <Compile Include="Tools\Sim.cs" />
     <Compile Include="Watcher.cs" />
     <Compile Include="Module\Fun.cs" />

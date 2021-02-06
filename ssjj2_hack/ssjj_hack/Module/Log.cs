@@ -15,7 +15,7 @@ namespace ssjj_hack
             wind.CallOnGUI();
         }
 
-        private static Window wind = new Window("日志", new Vector2(Screen.width * 0.6f, 10), new Vector2(400, 400), OnWindowGUI);
+        private static Window wind = new Window("日志", new Vector2(880, 10), new Vector2(400, 400), OnWindowGUI);
 
         private static Queue<string> cachedLogs = new Queue<string>();
         private static int selectedLogIndex = -1;
@@ -26,6 +26,7 @@ namespace ssjj_hack
             if (cachedLogs.Count <= 0)
                 return;
 
+            var btnAlign = GUI.skin.button.alignment;
             GUI.contentColor = Color.green;
             GUI.skin.button.alignment = TextAnchor.MiddleLeft;
             if (GUILayout.Button("清空日志", GUILayout.Width(64)))
@@ -33,7 +34,10 @@ namespace ssjj_hack
                 cachedLogs.Clear();
                 selectedLogIndex = -1;
             }
+            GUI.skin.button.alignment = btnAlign;
 
+            var boxAlign = GUI.skin.box.alignment;
+            GUI.skin.box.alignment = TextAnchor.MiddleLeft;
             var index = 0;
             var selectedLog = "";
             scroll = GUILayout.BeginScrollView(scroll, false, false, GUIStyle.none, GUI.skin.verticalScrollbar);
@@ -56,6 +60,7 @@ namespace ssjj_hack
             GUILayout.EndScrollView();
             GUI.contentColor = Color.white;
             GUILayout.TextArea(selectedLog);
+            GUI.skin.box.alignment = boxAlign;
         }
 
 
@@ -74,6 +79,10 @@ namespace ssjj_hack
             }
         }
 
+        public static void PrintError(object msg)
+        {
+            Print("Error: " + msg);
+        }
 
         private static Dictionary<string, string> logCount = new Dictionary<string, string>();
         public static void PrintOnce(string key, string msg)
@@ -86,7 +95,7 @@ namespace ssjj_hack
 
         public static void Print(Exception ex)
         {
-            Print("Error: " + ex.Message + "\r\n" + ex.StackTrace);
+            Print("Exception: " + ex.Message + "\r\n" + ex.StackTrace);
         }
 
 
