@@ -30,7 +30,6 @@ namespace ssjj_hack
         public void CallOnGUI()
         {
             GUI.Box(rect, "");
-            GUI.Box(rect, "");
             if (isMinimize) rect.size = minimizeSize;
             else rect.size = size;
             rect = GUI.Window(id, rect, WindowFunc, name);

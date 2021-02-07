@@ -12,10 +12,10 @@ namespace ssjj_hack
 
         public override void OnGUI()
         {
-            wind.CallOnGUI();
+            window.CallOnGUI();
         }
 
-        private static Window wind = new Window("日志", new Vector2(880, 10), new Vector2(400, 400), OnWindowGUI);
+        private static Window window = new Window("日志", new Vector2(Screen.width - 410, 10), new Vector2(400, 400), OnWindowGUI);
 
         private static Queue<string> cachedLogs = new Queue<string>();
         private static int selectedLogIndex = -1;
@@ -97,6 +97,12 @@ namespace ssjj_hack
         public static void Print(Exception ex)
         {
             Print("Exception: " + ex.Message + "\r\n" + ex.StackTrace);
+        }
+
+        public static void PrintToFile(string msg)
+        { 
+            var _date = DateTime.Now.ToString("HH:mm:ss.ms");
+            File.AppendAllText(file, $"[{_date}] {msg}\r\n");
         }
 
 

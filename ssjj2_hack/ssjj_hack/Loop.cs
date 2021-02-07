@@ -18,7 +18,8 @@ namespace ssjj_hack
             }
             catch (Exception ex)
             {
-                Log.Print(ex);
+                var log = ("Init Exception: " + ex.Message + "\r\n" + ex.StackTrace);
+                Log.PrintToFile(log);
             }
 
             foreach (var t in modules)
@@ -64,21 +65,6 @@ namespace ssjj_hack
                     Log.Print(ex);
                 }
             }
-        }
-
-        private Stopwatch watch = new Stopwatch();
-        private string _currentWatchName = "";
-        private void BeginWatch(string name)
-        {
-            _currentWatchName = name;
-            watch.Reset();
-            watch.Start();
-        }
-
-        private void EndWatch()
-        {
-            Watcher.Record($"{_currentWatchName}", watch.ElapsedTicks);
-            watch.Stop();
         }
 
         void Update()
@@ -147,6 +133,21 @@ namespace ssjj_hack
             }
         }
 
+        private Stopwatch watch = new Stopwatch();
+        private string _currentWatchName = "";
+        private void BeginWatch(string name)
+        {
+            _currentWatchName = name;
+            watch.Reset();
+            watch.Start();
+        }
+
+        private void EndWatch()
+        {
+            Watcher.Record($"{_currentWatchName}", watch.ElapsedTicks);
+            watch.Stop();
+        }
+
         public Dictionary<Type, ModuleBase> modules = new Dictionary<Type, ModuleBase>();
 
         public void AddPlugin<T>() where T : ModuleBase, new()
@@ -157,7 +158,6 @@ namespace ssjj_hack
                 modules.Add(typeof(T), Activator.CreateInstance(typeof(T)) as T);
             }
         }
-
 
         public static T GetPlugin<T>() where T : ModuleBase
         {
@@ -170,6 +170,7 @@ namespace ssjj_hack
 
         public void InitPlugins()
         {
+            AddPlugin<Log>();
             AddPlugin<SettingsModule>();
             AddPlugin<GizmosPro>();
             AddPlugin<PlayerCollector>();
@@ -178,7 +179,7 @@ namespace ssjj_hack
             AddPlugin<Esp>();
             // AddPlugin<Aim>();
             AddPlugin<Fun>();
-            AddPlugin<Log>();
+            AddPlugin<Watcher>();
             // AddPlugin<Chat>();
             // AddPlugin<Punch>();
             // AddPlugin<Spread>();

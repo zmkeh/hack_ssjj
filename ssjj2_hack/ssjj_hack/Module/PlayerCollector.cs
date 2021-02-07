@@ -187,6 +187,7 @@ namespace ssjj_hack
                 || l_foot == null || r_foot == null)
             {
                 isBonesCached = false;
+                return;
             }
             isBonesCached = true;
         }

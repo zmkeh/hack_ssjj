@@ -55,7 +55,7 @@
     <Compile Include="Module\Hierarchy.cs" />
     <Compile Include="Module\Inspector.cs" />
     <Compile Include="Tools\Sim.cs" />
-    <Compile Include="Watcher.cs" />
+    <Compile Include="Module\Watcher.cs" />
     <Compile Include="Module\Fun.cs" />
     <Compile Include="Module\SettingsModule.cs" />
     <Compile Include="Extensions\BaseExtension.cs" />
