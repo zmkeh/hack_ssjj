@@ -9,6 +9,8 @@ namespace ssjj_hack.Module
 
         public override void OnGUI()
         {
+            if (!Settings.isOn)
+                return;
             if (!Settings.isEsp)
                 return;
             base.Update();

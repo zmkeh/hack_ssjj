@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using Ping = ssjj_hack.Module.Ping;
 
 namespace ssjj_hack
 {
@@ -166,25 +167,34 @@ namespace ssjj_hack
 
         public static T GetPlugin<T>() where T : ModuleBase
         {
-            if (ins == null)
-                ins = GameObject.Find("HACK").GetComponent<Loop>();
-            if (ins.modules.TryGetValue(typeof(T), out var m))
+            if (Instance.modules.TryGetValue(typeof(T), out var m))
                 return m as T;
             return null;
+        }
+
+        public static Loop Instance
+        {
+            get
+            {
+                if (ins == null)
+                    ins = GameObject.Find("HACK").GetComponent<Loop>();
+                return ins;
+            }
         }
 
         public void InitPlugins()
         {
             AddPlugin<SettingsModule>();
-            // AddPlugin<Viewer>();
             AddPlugin<PlayerMgr>();
             AddPlugin<Esp>();
             AddPlugin<Aim>();
+            AddPlugin<Ping>();
             // AddPlugin<Fun>();
             // AddPlugin<Chat>();
             // AddPlugin<Punch>();
             // AddPlugin<Spread>();
             // AddPlugin<Module.Ping>();
+            // AddPlugin<Viewer>();
         }
     }
 }

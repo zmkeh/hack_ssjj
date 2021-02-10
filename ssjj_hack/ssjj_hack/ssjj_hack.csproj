@@ -51,6 +51,9 @@
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>..\..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\UnityEngine.Networking.dll</HintPath>
+    </Reference>
     <Reference Include="weaponPredicateNet.net">
       <HintPath>..\..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\weaponPredicateNet.net.dll</HintPath>
     </Reference>
@@ -94,8 +97,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetDir)$(ProjectName).dll" "F:\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\StreamingAssets\hack.dll"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ssjj_hack", "ssjj_hack\ssjj_hack.csproj", "{13ED56EF-0D3D-4BBE-A6D0-AB12E310ECAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ssjj_main", "ssjj_main\ssjj_main.csproj", "{45843395-20D6-4BA5-9483-191643927974}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ssjj_main", "ssjj_main\ssjj_main.csproj", "{45843395-20D6-4BA5-9483-191643927974}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ssjj_main_netframework", "ssjj_main_netframework\ssjj_main_netframework.csproj", "{C4B0911F-A8F7-4A70-B28F-2E498ED94E96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{45843395-20D6-4BA5-9483-191643927974}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45843395-20D6-4BA5-9483-191643927974}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45843395-20D6-4BA5-9483-191643927974}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4B0911F-A8F7-4A70-B28F-2E498ED94E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4B0911F-A8F7-4A70-B28F-2E498ED94E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4B0911F-A8F7-4A70-B28F-2E498ED94E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4B0911F-A8F7-4A70-B28F-2E498ED94E96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

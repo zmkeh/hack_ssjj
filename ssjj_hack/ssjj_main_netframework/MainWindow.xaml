@@ -1,0 +1,46 @@
+﻿<Window x:Class="ssjj_main_netframework.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ssjj_main_netframework"
+        mc:Ignorable="d"
+        Title="生死狙击" Height="357" Width="265" WindowStyle="SingleBorderWindow" ResizeMode="CanMinimize" Icon="ability.png" Closing="Window_Closing">
+    <Grid Initialized="Grid_Initialized" Background="#FFB0BECB">
+        <ProgressBar x:Name="progressBar"  HorizontalAlignment="Center" Margin="0,243,0,0" Height="45" Width="216" VerticalAlignment="Top" Maximum="1" Foreground="#FF77E48A" SmallChange="0.01">
+        </ProgressBar>
+        <Button x:Name="button" Content="启 动" HorizontalAlignment="Center" VerticalAlignment="Top" Height="51" Width="222" Click="Button_Click" Margin="0,240,0,0" BorderBrush="#FF42C55B" BorderThickness="3,3,3,3" FontSize="16" FontWeight="Normal" FontStyle="Normal" Opacity="0.4">
+            <Button.Foreground>
+                <SolidColorBrush Color="Black" Opacity="0.99"/>
+            </Button.Foreground>
+            <Button.Background>
+                <SolidColorBrush Color="#FFD7F1D0" Opacity="1"/>
+            </Button.Background>
+        </Button>
+        <CheckBox x:Name="esp" Content="透视" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="esp_friendly" Content="显示队友" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="esp_hp" Content="显示血量" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="esp_box" Content="显示方框" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="esp_boneline" Content="显示骨骼" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="esp_airline" Content="显示天线" HorizontalAlignment="Left" Margin="10,126,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="aim" Content="自瞄" HorizontalAlignment="Left" Margin="132,26,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="aim_line" Content="显示自瞄辅助线" HorizontalAlignment="Left" Margin="132,46,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="aim_circle" Content="显示自瞄范围" HorizontalAlignment="Left" Margin="132,66,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="no_recoil" Content="无后座" HorizontalAlignment="Left" Margin="10,171,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="no_spread" Content="无散射" HorizontalAlignment="Left" Margin="10,191,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="is_windowed" Content="窗口化" HorizontalAlignment="Left" Margin="132,171,0,0" VerticalAlignment="Top"/>
+        <Label Content="范围" HorizontalAlignment="Left" Margin="126,88,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="aim_range"  HorizontalAlignment="Left" Margin="160,90,0,0" VerticalAlignment="Top" Width="78">
+            <ComboBoxItem Content="最小"/>
+            <ComboBoxItem Content="较小"/>
+            <ComboBoxItem Content="正常"/>
+            <ComboBoxItem Content="较大"/>
+            <ComboBoxItem Content="最大"/>
+        </ComboBox>
+        <Label Content="部位" HorizontalAlignment="Left" Margin="126,116,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="aim_pos"  HorizontalAlignment="Left" Margin="160,118,0,0" VerticalAlignment="Top" Width="78">
+            <ComboBoxItem Content="头部"/>
+            <ComboBoxItem Content="胸部"/>
+        </ComboBox>
+    </Grid>
+</Window>

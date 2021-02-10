@@ -14,6 +14,9 @@ namespace ssjj_hack.Module
 
         public override void Update()
         {
+            if (!Settings.isOn)
+                return;
+
             if (!Settings.isAim)
                 return;
             base.Update();
