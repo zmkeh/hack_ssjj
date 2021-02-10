@@ -34,14 +34,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Entitas">
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\Managed\Entitas.dll</HintPath>
+      <HintPath>..\..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\Entitas.dll</HintPath>
     </Reference>
-    <Reference Include="SSJJ.Contract, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\Managed\SSJJ.Contract.dll</HintPath>
+    <Reference Include="SSJJ.Contract">
+      <HintPath>..\..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\SSJJ.Contract.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,11 +49,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="weaponPredicateNet.net, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\games\SSJJ-4399\battle\7\SSJJ_BattleClient_Unity_Data\Managed\weaponPredicateNet.net.dll</HintPath>
+    <Reference Include="weaponPredicateNet.net">
+      <HintPath>..\..\..\..\..\games\SSJJ-4399\battle\18\SSJJ_BattleClient_Unity_Data\Managed\weaponPredicateNet.net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

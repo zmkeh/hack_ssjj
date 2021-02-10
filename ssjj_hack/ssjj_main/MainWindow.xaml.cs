@@ -372,8 +372,10 @@ namespace ssjj_main
             aim_range.SelectedIndex = Settings.aimRange;
             aim_pos.SelectedIndex = (int)Settings.aimPos;
 
-            no_recoil.IsChecked = Settings.isNoRecoil;
-            no_spread.IsChecked = Settings.isNoSpread;
+            no_recoil.IsEnabled = false;
+            no_recoil.IsChecked = false; // Settings.isNoRecoil;
+            no_spread.IsEnabled = false;
+            no_spread.IsChecked = false; //Settings.isNoSpread;
             is_windowed.IsChecked = Settings.isWindowed;
 
             // enable
@@ -391,8 +393,8 @@ namespace ssjj_main
             aim_range.IsEnabled = Settings.isAim && all_enable;
             aim_pos.IsEnabled = Settings.isAim && all_enable;
 
-            no_recoil.IsEnabled = all_enable;
-            no_spread.IsEnabled = all_enable;
+            //no_recoil.IsEnabled = all_enable;
+            //no_spread.IsEnabled = all_enable;
             is_windowed.IsEnabled = all_enable;
         }
 
